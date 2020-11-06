@@ -1,26 +1,32 @@
+/* eslint-disable no-loop-func */
+import isEmpty from 'lodash/isEmpty';
+
 import { calculateNextGeneration, calculateNextGenerationDataDiff } from 'src/data';
 import { updateGrid } from 'src/grid';
 
 const DELAY = 50;
 
-const runLifeGame = (dataModel, i = 1) => {
-  if (i === 100) {
-    return;
+const runLifeGame = (dataModel) => {
+  const counterEl = document.body.querySelector('#iterations');
+  let currentDataModel = dataModel;
+
+  for (let i = 0; i < 1000; i += 1) {
+    ((count) => setTimeout(() => {
+      const nextGenerationDataModel = calculateNextGeneration(currentDataModel);
+      const dataModelDiff = calculateNextGenerationDataDiff(
+        currentDataModel,
+        nextGenerationDataModel,
+      );
+
+      if (!isEmpty(dataModelDiff)) {
+        counterEl.innerHTML = count;
+
+        updateGrid(dataModelDiff);
+
+        currentDataModel = nextGenerationDataModel;
+      }
+    }, DELAY + i * 16))(i);
   }
-
-  const nextCounter = i + 1;
-
-  setTimeout(() => {
-    const nextGenerationDataModel = calculateNextGeneration(dataModel);
-    const dataModelDiff = calculateNextGenerationDataDiff(
-      dataModel,
-      nextGenerationDataModel,
-    );
-
-    updateGrid(dataModelDiff);
-
-    runLifeGame(nextGenerationDataModel, nextCounter);
-  }, DELAY + i * 16);
 };
 
 export function runGameObserver(dataModel) {
