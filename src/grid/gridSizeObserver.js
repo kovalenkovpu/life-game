@@ -1,10 +1,10 @@
+import { initialData } from 'src/constants/initialData';
 import { createDataModel } from 'src/data';
+
 import { createGrid } from './createGrid';
 import { runGameObserver } from './runGameObserver';
 
-import { LEFT_PANEL_CLASS_NAME } from '../constants/classes';
-
-const selectedCells = ['4-3', '4-5', '5-4', '5-5', '6-5'];
+import { LEFT_PANEL_CLASS_NAME } from '../constants/common';
 
 export function gridSizeObserver() {
   const leftPanel = document.body.querySelector(LEFT_PANEL_CLASS_NAME);
@@ -14,7 +14,7 @@ export function gridSizeObserver() {
 
     if (isRadio) {
       const { value: oneDimensionSize } = target;
-      const dataModel = createDataModel(oneDimensionSize, selectedCells);
+      const dataModel = createDataModel(oneDimensionSize, initialData);
 
       createGrid(oneDimensionSize, dataModel);
       runGameObserver(dataModel);

@@ -7,7 +7,7 @@ export function calculateNextGeneration(dataModel) {
         .map((cell) => getSelectedCellNeighbours(cell, dataModel)),
     );
 
-  const nextGenerationDataModel = dataModel
+  return dataModel
     .map((_, i) => dataModel[i]
       .map((cell, j) => {
         const { selectedNumber } = currentGenerationData[i][j];
@@ -20,19 +20,12 @@ export function calculateNextGeneration(dataModel) {
           };
         }
 
-        if (isAlive && (selectedNumber === 2 || selectedNumber === 3)) {
-          return cell;
-        }
-
-        if (isAlive && (selectedNumber > 2 || selectedNumber < 3)) {
-          return {
-            ...cell,
-            selected: false,
-          };
+        if (isAlive) {
+          return (selectedNumber === 2 || selectedNumber === 3)
+            ? cell
+            : { ...cell, selected: false };
         }
 
         return cell;
       }));
-
-  return nextGenerationDataModel;
 }

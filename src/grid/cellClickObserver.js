@@ -1,4 +1,4 @@
-import { GRID_CLASS_NAME } from 'src/constants/classes';
+import { GRID_CLASS_NAME } from 'src/constants/common';
 
 export function cellClickObserver() {
   const existingGrid = document.body.querySelector(`.${GRID_CLASS_NAME}`);

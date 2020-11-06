@@ -1,12 +1,9 @@
-import { GRID_CLASS_NAME } from 'src/constants/classes';
-
 export function updateGrid(dataModelDiff) {
-  const existingGrid = document.body.querySelector(`.${GRID_CLASS_NAME}`);
-
   dataModelDiff
     .forEach((cellData) => {
-      const cell = existingGrid.querySelector(`[data-id="${cellData.id}"]`);
+      const cell = document.getElementById(cellData.id);
+      const selected = String(!cellData.selected);
 
-      cell.setAttribute('data-selected', !cellData.selected);
+      cell.setAttribute('data-selected', selected);
     });
 }

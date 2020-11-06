@@ -1,4 +1,4 @@
-import { GRID_CLASS_NAME, LEFT_PANEL_CLASS_NAME } from 'src/constants/classes';
+import { GRID_CLASS_NAME, LEFT_PANEL_CLASS_NAME } from 'src/constants/common';
 import { findCellDataById } from 'src/data';
 import { cellClickObserver } from 'src/grid';
 
@@ -22,7 +22,8 @@ export function createGrid(oneDimensionSize, dataModel) {
 
     cell.setAttribute('class', `cell cell-${i}`);
     cell.setAttribute('data-type', 'cell');
-    cell.setAttribute('data-id', i);
+    cell.setAttribute('data-id', String(i));
+    cell.setAttribute('id', String(i));
     cell.setAttribute('data-selected', cellData.selected);
 
     grid.insertAdjacentElement('beforeend', cell);
