@@ -15,11 +15,11 @@ module.exports = {
   },
   output: {
     filename: '[name]',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'docs'),
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, 'docs'),
     inline: true,
     port: 3000,
     open: true,
