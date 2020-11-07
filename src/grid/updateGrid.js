@@ -1,8 +1,8 @@
 export function updateGrid(dataModelDiff) {
   dataModelDiff
-    .forEach((cellData) => {
-      const cell = document.getElementById(cellData.id);
-      const selected = String(!cellData.selected);
+    .forEach((id) => {
+      const cell = document.getElementById(id);
+      const selected = cell.dataset.selected === 'true' ? 'false' : 'true';
 
       cell.setAttribute('data-selected', selected);
     });

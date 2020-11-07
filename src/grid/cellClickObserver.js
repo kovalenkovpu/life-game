@@ -7,10 +7,9 @@ export function cellClickObserver() {
     const { target: element } = event;
 
     if (element.dataset.type === 'cell') {
-      const cell = existingGrid.querySelector(`[data-id="${element.dataset.id}"]`);
       const selected = element.dataset.selected === 'true' ? 'false' : 'true';
 
-      cell.dataset.selected = selected;
+      element.dataset.selected = selected;
     }
   });
 }

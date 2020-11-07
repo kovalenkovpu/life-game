@@ -1,5 +1,4 @@
 import { GRID_CLASS_NAME, LEFT_PANEL_CLASS_NAME } from 'src/constants/common';
-import { findCellDataById } from 'src/data';
 import { cellClickObserver } from 'src/grid';
 
 export function createGrid(oneDimensionSize, dataModel) {
@@ -10,23 +9,24 @@ export function createGrid(oneDimensionSize, dataModel) {
   }
 
   const grid = document.createElement('main');
-  const numberOfCells = oneDimensionSize ** 2;
 
   grid.classList.add(GRID_CLASS_NAME);
   grid.style['grid-template-row'] = `repeat(${oneDimensionSize}, 1fr)`;
   grid.style['grid-template-columns'] = `repeat(${oneDimensionSize}, 1fr)`;
 
-  for (let i = 0; i < numberOfCells; i += 1) {
-    const cell = document.createElement('span');
-    const cellData = findCellDataById(i, dataModel);
+  for (let i = 0; i < oneDimensionSize; i += 1) {
+    for (let j = 0; j < oneDimensionSize; j += 1) {
+      const cell = document.createElement('span');
+      const cellData = dataModel[i][j];
+      const isSelectedStringified = String(Boolean(cellData));
 
-    cell.setAttribute('class', `cell cell-${i}`);
-    cell.setAttribute('data-type', 'cell');
-    cell.setAttribute('data-id', String(i));
-    cell.setAttribute('id', String(i));
-    cell.setAttribute('data-selected', cellData.selected);
+      cell.setAttribute('id', i * oneDimensionSize + j);
+      cell.setAttribute('class', 'cell');
+      cell.setAttribute('data-type', 'cell');
+      cell.setAttribute('data-selected', isSelectedStringified);
 
-    grid.insertAdjacentElement('beforeend', cell);
+      grid.insertAdjacentElement('beforeend', cell);
+    }
   }
 
   document
