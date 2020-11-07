@@ -3,8 +3,10 @@ import {
   LEFT_PANEL_CLASS_NAME,
   RUN_GAME_BTN,
   PAUSE_GAME_BTN,
+  RANDOMIZE_BTN,
   STOP_GAME_BTN,
   COUNTER_ID,
+  RANDOMIZE_FACTOR_ID,
 } from 'src/constants/common';
 
 export class GameView {
@@ -14,13 +16,13 @@ export class GameView {
 
   onPauseGame = null;
 
-  grid = null;
-
-  startGameButton = null;
-
-  stopGameButton = null;
+  onRandomize = null;
 
   oneDimensionSize = null;
+
+  randomizeFactor = 0;
+
+  grid = document.createElement('main');
 
   startGameButton = document.querySelector(RUN_GAME_BTN);
 
@@ -28,7 +30,13 @@ export class GameView {
 
   stopGameButton = document.querySelector(STOP_GAME_BTN);
 
+  randomizeButton = document.querySelector(RANDOMIZE_BTN);
+
+  randomizeFactorInput = document.querySelector(RANDOMIZE_FACTOR_ID);
+
   counterEl = document.getElementById(COUNTER_ID);
+
+  getRandomizeFactor = () => this.randomizeFactorInput.value;
 
   startGameHandler = () => {
     this.onStartGame();
@@ -36,6 +44,7 @@ export class GameView {
     this.startGameButton.disabled = true;
     this.pauseGameButton.disabled = false;
     this.stopGameButton.disabled = false;
+    this.randomizeButton.disabled = true;
   };
 
   pauseGameHandler = () => {
@@ -44,6 +53,7 @@ export class GameView {
     this.startGameButton.innerText = 'Resume game';
     this.startGameButton.disabled = false;
     this.pauseGameButton.disabled = true;
+    this.randomizeButton.disabled = false;
   };
 
   stopGameHandler = () => {
@@ -51,25 +61,14 @@ export class GameView {
 
     this.startGameButton.innerText = 'Start game';
     this.startGameButton.disabled = false;
+    this.randomizeButton.disabled = false;
   };
 
-  renderGrid = (dataModel, counter) => {
-    const existingGrid = document.body.querySelector(`.${GRID_CLASS_NAME}`);
+  randomizeHandler = () => {
+    this.onRandomize();
+  };
 
-    if (existingGrid) {
-      existingGrid.remove();
-
-      this.startGameButton.removeEventListener('click', this.startGameHandler);
-      this.pauseGameButton.removeEventListener('click', this.pauseGameHandler);
-      this.stopGameButton.removeEventListener('click', this.stopGameHandler);
-    }
-
-    this.counterEl.innerText = counter;
-    this.grid = document.createElement('main');
-    this.grid.classList.add(GRID_CLASS_NAME);
-    this.grid.style['grid-template-row'] = `repeat(${this.oneDimensionSize}, 1fr)`;
-    this.grid.style['grid-template-columns'] = `repeat(${this.oneDimensionSize}, 1fr)`;
-
+  generateGridMarkup = (dataModel) => {
     for (let i = 0; i < this.oneDimensionSize; i += 1) {
       for (let j = 0; j < this.oneDimensionSize; j += 1) {
         const cell = document.createElement('span');
@@ -84,6 +83,25 @@ export class GameView {
         this.grid.insertAdjacentElement('beforeend', cell);
       }
     }
+  };
+
+  renderGrid = (dataModel, counter) => {
+    const existingGrid = document.body.querySelector(`.${GRID_CLASS_NAME}`);
+
+    if (existingGrid) {
+      existingGrid.remove();
+
+      this.startGameButton.removeEventListener('click', this.startGameHandler);
+      this.pauseGameButton.removeEventListener('click', this.pauseGameHandler);
+      this.stopGameButton.removeEventListener('click', this.stopGameHandler);
+    }
+
+    this.counterEl.innerText = counter;
+    this.grid.classList.add(GRID_CLASS_NAME);
+    this.grid.style['grid-template-row'] = `repeat(${this.oneDimensionSize}, 1fr)`;
+    this.grid.style['grid-template-columns'] = `repeat(${this.oneDimensionSize}, 1fr)`;
+
+    this.generateGridMarkup(dataModel);
 
     document
       .querySelector(LEFT_PANEL_CLASS_NAME)
@@ -96,6 +114,8 @@ export class GameView {
 
     this.stopGameButton.addEventListener('click', this.stopGameHandler);
     this.stopGameButton.disabled = true;
+
+    this.randomizeButton.addEventListener('click', this.randomizeHandler);
   };
 
   updateGrid = (generationDiff, counter) => {

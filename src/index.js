@@ -1,8 +1,8 @@
 import 'src/styles.scss';
 
-import { GameView } from 'src/GameView';
-import { GameModel } from 'src/GameModel';
-import { GameController } from 'src/GameController';
+import { GameView } from 'src/views/GameView';
+import { GameModel } from 'src/models/GameModel';
+import { GameController } from 'src/controllers/GameController';
 
 import { initialData } from './constants/initialData';
 
