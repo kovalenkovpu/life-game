@@ -4,17 +4,9 @@ export function createDataModel(oneDimensionSize, selectedCells = []) {
 
   dataModel = dataModel
     .map((row, i) => row.map((_, j) => {
-      const id = i * oneDimensionSize + j;
-      const cell = {
-        id,
-        i,
-        j,
-        ij: `${i}-${j}`,
-      };
+      const id = `${i}-${j}`;
 
-      cell.selected = selectedCells.includes(cell.ij);
-
-      return cell;
+      return Number(selectedCells.includes(id));
     }));
 
   return dataModel;

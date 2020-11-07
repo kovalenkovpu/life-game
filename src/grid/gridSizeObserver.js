@@ -1,10 +1,9 @@
 import { initialData } from 'src/constants/initialData';
-import { createDataModel } from 'src/data';
+import { createDataModel } from 'src/dataModel';
+import { LEFT_PANEL_CLASS_NAME } from 'src/constants/common';
 
 import { createGrid } from './createGrid';
 import { runGameObserver } from './runGameObserver';
-
-import { LEFT_PANEL_CLASS_NAME } from '../constants/common';
 
 export function gridSizeObserver() {
   const leftPanel = document.body.querySelector(LEFT_PANEL_CLASS_NAME);

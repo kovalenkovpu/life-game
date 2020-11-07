@@ -9,7 +9,7 @@ import {
 import {
   calculateNextGeneration,
   calculateNextGenerationDataDiff,
-} from 'src/data';
+} from 'src/dataModel';
 import { updateGrid } from 'src/grid';
 
 const runLifeGame = (dataModel) => {
