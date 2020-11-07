@@ -18,11 +18,7 @@ export class GameView {
 
   onRandomize = null;
 
-  oneDimensionSize = null;
-
-  randomizeFactor = 0;
-
-  grid = document.createElement('main');
+  grid = null;
 
   startGameButton = document.querySelector(RUN_GAME_BTN);
 
@@ -33,6 +29,8 @@ export class GameView {
   randomizeButton = document.querySelector(RANDOMIZE_BTN);
 
   randomizeFactorInput = document.querySelector(RANDOMIZE_FACTOR_ID);
+
+  randomizeFactor = 0;
 
   counterEl = document.getElementById(COUNTER_ID);
 
@@ -97,6 +95,7 @@ export class GameView {
     }
 
     this.counterEl.innerText = counter;
+    this.grid = document.createElement('main');
     this.grid.classList.add(GRID_CLASS_NAME);
     this.grid.style['grid-template-row'] = `repeat(${this.oneDimensionSize}, 1fr)`;
     this.grid.style['grid-template-columns'] = `repeat(${this.oneDimensionSize}, 1fr)`;
