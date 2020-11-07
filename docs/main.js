@@ -377,11 +377,7 @@ var GameView = function GameView() {
 
   _defineProperty(this, "onRandomize", null);
 
-  _defineProperty(this, "oneDimensionSize", null);
-
-  _defineProperty(this, "randomizeFactor", 0);
-
-  _defineProperty(this, "grid", document.createElement('main'));
+  _defineProperty(this, "grid", null);
 
   _defineProperty(this, "startGameButton", document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RUN_GAME_BTN));
 
@@ -392,6 +388,8 @@ var GameView = function GameView() {
   _defineProperty(this, "randomizeButton", document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_BTN));
 
   _defineProperty(this, "randomizeFactorInput", document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_FACTOR_ID));
+
+  _defineProperty(this, "randomizeFactor", 0);
 
   _defineProperty(this, "counterEl", document.getElementById(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.COUNTER_ID));
 
@@ -459,6 +457,7 @@ var GameView = function GameView() {
     }
 
     _this.counterEl.innerText = counter;
+    _this.grid = document.createElement('main');
 
     _this.grid.classList.add(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.GRID_CLASS_NAME);
 
