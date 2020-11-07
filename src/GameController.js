@@ -2,10 +2,13 @@ export class GameController {
   constructor(gameModel, gameView) {
     this.gameModel = gameModel;
     this.gameView = gameView;
-    this.oneDimensionSize = 100;
-    this.intervalId = null;
-    this.counter = 0;
   }
+
+  oneDimensionSize = 200;
+
+  intervalId = null;
+
+  counter = 0;
 
   // When start button is clicked
   onStartGame = () => {

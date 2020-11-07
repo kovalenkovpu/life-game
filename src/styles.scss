@@ -20,9 +20,13 @@ button {
   padding: 4px;
   border-radius: 4px;
 
-  &:hover {
+  &:hover:not(:disabled) {
     cursor: pointer;
     background-color: lightgray;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
   }
 }
 
@@ -49,8 +53,8 @@ label:hover {
 }
 
 .main-grid {
-  width: 500px;
-  height: 500px;
+  width: 700px;
+  height: 700px;
   display: grid;
   grid-gap: 0.05rem;
 }
@@ -85,10 +89,15 @@ label:hover {
   width: 130px;
   border: 1px solid lightgrey;
   border-radius: 4px;
+  font-size: 12px;
 }
 
 .run-game {
   margin-bottom: 20px;
+}
+
+.pause-game {
+  margin-bottom: 5px;
 }
 
 .iterations {

@@ -1,7 +1,9 @@
 import 'src/styles.scss';
-import { GameView } from 'src/migration/GameView';
-import { GameModel } from 'src/migration/GameModel';
-import { GameController } from 'src/migration/GameController';
+
+import { GameView } from 'src/GameView';
+import { GameModel } from 'src/GameModel';
+import { GameController } from 'src/GameController';
+
 import { initialData } from './constants/initialData';
 
 window.addEventListener('load', () => {

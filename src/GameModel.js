@@ -3,11 +3,15 @@ import get from 'lodash/get';
 export class GameModel {
   constructor(initialData) {
     this.initialData = initialData;
-    this.oneDimensionSize = null;
-    this.previousDataModel = [];
-    this.dataModel = [];
-    this.generationDiff = [];
   }
+
+  oneDimensionSize = null;
+
+  previousDataModel = [];
+
+  dataModel = [];
+
+  generationDiff = [];
 
   createDataModel = () => {
     const dataModelMock = new Array(this.oneDimensionSize)
