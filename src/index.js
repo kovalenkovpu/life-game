@@ -1,6 +1,15 @@
 import 'src/styles.scss';
-import { gridSizeObserver } from 'src/grid';
+
+import { GameView } from 'src/views/GameView';
+import { GameModel } from 'src/models/GameModel';
+import { GameController } from 'src/controllers/GameController';
+
+import { initialData } from './constants/initialData';
 
 window.addEventListener('load', () => {
-  gridSizeObserver();
+  const gameModel = new GameModel(initialData);
+  const gameView = new GameView();
+  const gameController = new GameController(gameModel, gameView);
+
+  gameController.initGame();
 });

@@ -10,19 +10,23 @@
 <body>
   <aside class="left-panel">
     <h4 class="information-panel">Information panel</h4>
-    <fieldset id="group1">
+    <!-- TODO: Implement custom grid size  -->
+    <!-- <fieldset id="group1">
       <label for="small">
-        <input type="radio" id="small" name="group1" value="10">
-        10 x 10
+        <input type="radio" id="small" name="group1" value="100">
+        100 x 100
       </label>
       <br>
 
       <label for="middle">
         <input type="radio" id="middle" name="group1" value="100">
-        100 x 100
+        1000 x 1000
       </label><br>
-    </fieldset>
-    <button class="run-game">Run for 1000 iterations</button>
+    </fieldset> -->
+    <input id="randomize-factor" type="number" min="0" max="1" value="0.5" step="0.1" />
+    <button class="randomize">Randomize</button>
+    <button class="run-game">Run game</button>
+    <button class="pause-game">Pause game</button>
     <button class="stop-game">Stop game</button>
     <p class="iterations">
       Number of iterations:
