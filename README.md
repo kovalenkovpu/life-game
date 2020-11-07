@@ -11,10 +11,10 @@
  - `yarn run build` for building the applcation into `dist` folder.
 
 ### TODO:
-- [ ] New data model - LG01
-- [ ] Performance on current solution - LG02
+- [x] New data model - LG01
+- [x] Performance on current solution - LG01
 - [ ] Code style
-- [ ] Move function approach to class-based - LG03
+- [ ] Move function approach to class-based MVC - LG03
 - [ ] TS support
 - [ ] Move to canvas solution
 - [ ] Production config
