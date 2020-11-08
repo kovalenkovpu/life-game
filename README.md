@@ -14,7 +14,7 @@
 - [x] New data model - LG01
 - [x] Performance on current solution - LG01
 - [ ] Code style
-- [ ] Move function approach to class-based MVC - LG02
+- [x] Move function approach to class-based MVC - LG02
 - [ ] TS support
 - [ ] Move to canvas solution
 - [ ] Production config
