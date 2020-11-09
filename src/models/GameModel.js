@@ -5,7 +5,9 @@ export class GameModel {
     this.initialData = initialData;
   }
 
-  oneDimensionSize = null;
+  xSize = 0;
+
+  ySize = 0;
 
   previousDataModel = [];
 
@@ -14,8 +16,8 @@ export class GameModel {
   generationDiff = [];
 
   createDataModel = () => {
-    const dataModelMock = new Array(this.oneDimensionSize)
-      .fill(new Array(this.oneDimensionSize).fill(0));
+    const dataModelMock = new Array(this.ySize)
+      .fill(new Array(this.xSize).fill(0));
 
     this.dataModel = dataModelMock
       .map((row, i) => row.map((_, j) => {
@@ -29,11 +31,7 @@ export class GameModel {
     return this.dataModel;
   };
 
-  resetDataModel = () => {
-    this.dataModel = this.createDataModel();
-
-    return this.dataModel;
-  };
+  resetDataModel = () => this.createDataModel();
 
   getNeighboursIndices = (i, j) => {
     const leftTopIndex = [i - 1, j - 1];
@@ -114,7 +112,7 @@ export class GameModel {
           const diffByRow = this.previousDataModel[i]
             .reduce((indices, alive, j) => {
               if (this.dataModel[i][j] !== alive) {
-                indices.push(i * this.oneDimensionSize + j);
+                indices.push(i * this.xSize + j);
               }
 
               return indices;

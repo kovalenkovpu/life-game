@@ -5,8 +5,8 @@ import {
   PAUSE_GAME_BTN,
   RANDOMIZE_BTN,
   STOP_GAME_BTN,
-  COUNTER_ID,
-  RANDOMIZE_FACTOR_ID,
+  COUNTER_CLASS_NAME,
+  RANDOMIZE_FACTOR_CLASS_NAME,
 } from 'src/constants/common';
 
 export class GameView {
@@ -20,19 +20,39 @@ export class GameView {
 
   grid = null;
 
-  startGameButton = document.querySelector(RUN_GAME_BTN);
+  startGameButton = document.body.querySelector(RUN_GAME_BTN);
 
-  pauseGameButton = document.querySelector(PAUSE_GAME_BTN);
+  pauseGameButton = document.body.querySelector(PAUSE_GAME_BTN);
 
-  stopGameButton = document.querySelector(STOP_GAME_BTN);
+  stopGameButton = document.body.querySelector(STOP_GAME_BTN);
 
-  randomizeButton = document.querySelector(RANDOMIZE_BTN);
+  randomizeButton = document.body.querySelector(RANDOMIZE_BTN);
 
-  randomizeFactorInput = document.querySelector(RANDOMIZE_FACTOR_ID);
+  randomizeFactorInput = document.body.querySelector(RANDOMIZE_FACTOR_CLASS_NAME);
+
+  counterEl = document.body.querySelector(COUNTER_CLASS_NAME);
 
   randomizeFactor = 0;
 
-  counterEl = document.getElementById(COUNTER_ID);
+  xSize = 0;
+
+  ySize = 0;
+
+  gridWidth = 0;
+
+  gridHeight = 0;
+
+  getViewPortSize = () => {
+    this.gridWidth = Math.floor((document.documentElement.clientWidth - 150));
+    this.gridHeight = Math.floor(document.documentElement.clientHeight);
+    this.xSize = Math.floor(this.gridWidth / 8);
+    this.ySize = Math.floor(this.gridHeight / 8);
+
+    return {
+      xSize: this.xSize,
+      ySize: this.ySize,
+    };
+  }
 
   getRandomizeFactor = () => this.randomizeFactorInput.value;
 
@@ -67,13 +87,13 @@ export class GameView {
   };
 
   generateGridMarkup = (dataModel) => {
-    for (let i = 0; i < this.oneDimensionSize; i += 1) {
-      for (let j = 0; j < this.oneDimensionSize; j += 1) {
+    for (let i = 0; i < this.ySize; i += 1) {
+      for (let j = 0; j < this.xSize; j += 1) {
         const cell = document.createElement('span');
         const cellData = dataModel[i][j];
         const isSelectedStringified = String(Boolean(cellData));
 
-        cell.setAttribute('id', i * this.oneDimensionSize + j);
+        cell.setAttribute('id', i * this.xSize + j);
         cell.setAttribute('class', 'cell');
         cell.setAttribute('data-type', 'cell');
         cell.setAttribute('data-selected', isSelectedStringified);
@@ -83,38 +103,51 @@ export class GameView {
     }
   };
 
+  applyGridStyles = () => {
+    this.grid.classList.add(GRID_CLASS_NAME);
+    this.grid.style.width = `${this.gridWidth}px`;
+    this.grid.style.minWidth = `${this.gridWidth}px`;
+    this.grid.style.height = `${this.gridHeight}px`;
+    this.grid.style.minHeight = `${this.gridHeight}px`;
+    this.grid.style.gridTemplateRow = `repeat(${this.ySize}, 1fr)`;
+    this.grid.style.gridTemplateColumns = `repeat(${this.xSize}, 1fr)`;
+  };
+
+  attachControlsEventListeners = () => {
+    this.startGameButton.addEventListener('click', this.startGameHandler);
+    this.pauseGameButton.addEventListener('click', this.pauseGameHandler);
+    this.stopGameButton.addEventListener('click', this.stopGameHandler);
+    this.randomizeButton.addEventListener('click', this.randomizeHandler);
+  };
+
+  removeControlsEventListeners = () => {
+    this.startGameButton.removeEventListener('click', this.startGameHandler);
+    this.pauseGameButton.removeEventListener('click', this.pauseGameHandler);
+    this.stopGameButton.removeEventListener('click', this.stopGameHandler);
+  };
+
   renderGrid = (dataModel, counter) => {
     const existingGrid = document.body.querySelector(`.${GRID_CLASS_NAME}`);
 
     if (existingGrid) {
       existingGrid.remove();
 
-      this.startGameButton.removeEventListener('click', this.startGameHandler);
-      this.pauseGameButton.removeEventListener('click', this.pauseGameHandler);
-      this.stopGameButton.removeEventListener('click', this.stopGameHandler);
+      this.removeControlsEventListeners();
     }
 
-    this.counterEl.innerText = counter;
     this.grid = document.createElement('main');
-    this.grid.classList.add(GRID_CLASS_NAME);
-    this.grid.style['grid-template-row'] = `repeat(${this.oneDimensionSize}, 1fr)`;
-    this.grid.style['grid-template-columns'] = `repeat(${this.oneDimensionSize}, 1fr)`;
 
+    this.applyGridStyles();
     this.generateGridMarkup(dataModel);
+    this.attachControlsEventListeners();
 
     document
       .querySelector(LEFT_PANEL_CLASS_NAME)
       .insertAdjacentElement('afterend', this.grid);
 
-    this.startGameButton.addEventListener('click', this.startGameHandler);
-
-    this.pauseGameButton.addEventListener('click', this.pauseGameHandler);
     this.pauseGameButton.disabled = true;
-
-    this.stopGameButton.addEventListener('click', this.stopGameHandler);
     this.stopGameButton.disabled = true;
-
-    this.randomizeButton.addEventListener('click', this.randomizeHandler);
+    this.counterEl.innerText = counter;
   };
 
   updateGrid = (generationDiff, counter) => {
@@ -126,6 +159,6 @@ export class GameView {
         cell.setAttribute('data-selected', selected);
       });
 
-    document.getElementById(COUNTER_ID).innerHTML = counter;
+    document.body.querySelector(COUNTER_CLASS_NAME).innerHTML = counter;
   };
 }

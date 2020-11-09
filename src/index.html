@@ -4,37 +4,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Life Game</title>
+  <title>Game Of Life</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <aside class="left-panel">
     <h4 class="information-panel">Information panel</h4>
-    <!-- TODO: Implement custom grid size  -->
-    <!-- <fieldset id="group1">
-      <label for="small">
-        <input type="radio" id="small" name="group1" value="100">
-        100 x 100
-      </label>
-      <br>
-
-      <label for="middle">
-        <input type="radio" id="middle" name="group1" value="100">
-        1000 x 1000
-      </label><br>
-    </fieldset> -->
     <label for="randomize-factor">
-      Value from 0 to 1:
-      <input id="randomize-factor" type="number" min="0" max="1" value="0.5" step="0.1" />
+      Enter value from 0 to 1:
+      <input id="randomize-factor" class="randomize-factor" type="number" min="0" max="1" value="0.5" step="0.1" />
     </label>
     <button class="randomize">Randomize</button>
     <button class="run-game">Run game</button>
     <button class="pause-game">Pause game</button>
     <button class="stop-game">Stop game</button>
     <p class="iterations">
-      Number of iterations:
-      <span id="iterations">0</span>
+      # of iteration:
+      <span class="iterations-value">0</span>
     </p>
+    <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" class="wiki">
+      What is it? Wiki page
+    </a>
   </aside>
 </body>
 
