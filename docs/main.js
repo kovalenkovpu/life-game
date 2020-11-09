@@ -6,13 +6,13 @@
   !*** ./src/constants/common.js ***!
   \*********************************/
 /*! namespace exports */
-/*! export COUNTER_ID [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export COUNTER_CLASS_NAME [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export DELAY [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export GRID_CLASS_NAME [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export LEFT_PANEL_CLASS_NAME [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export PAUSE_GAME_BTN [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export RANDOMIZE_BTN [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export RANDOMIZE_FACTOR_ID [provided] [no usage info] [missing usage info prevents renaming] */
+/*! export RANDOMIZE_FACTOR_CLASS_NAME [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export RUN_GAME_BTN [provided] [no usage info] [missing usage info prevents renaming] */
 /*! export STOP_GAME_BTN [provided] [no usage info] [missing usage info prevents renaming] */
 /*! other exports [not provided] [no usage info] */
@@ -29,8 +29,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "PAUSE_GAME_BTN": () => /* binding */ PAUSE_GAME_BTN,
 /* harmony export */   "RANDOMIZE_BTN": () => /* binding */ RANDOMIZE_BTN,
 /* harmony export */   "DELAY": () => /* binding */ DELAY,
-/* harmony export */   "COUNTER_ID": () => /* binding */ COUNTER_ID,
-/* harmony export */   "RANDOMIZE_FACTOR_ID": () => /* binding */ RANDOMIZE_FACTOR_ID
+/* harmony export */   "COUNTER_CLASS_NAME": () => /* binding */ COUNTER_CLASS_NAME,
+/* harmony export */   "RANDOMIZE_FACTOR_CLASS_NAME": () => /* binding */ RANDOMIZE_FACTOR_CLASS_NAME
 /* harmony export */ });
 var GRID_CLASS_NAME = 'main-grid';
 var LEFT_PANEL_CLASS_NAME = '.left-panel';
@@ -39,8 +39,8 @@ var STOP_GAME_BTN = '.stop-game';
 var PAUSE_GAME_BTN = '.pause-game';
 var RANDOMIZE_BTN = '.randomize';
 var DELAY = 32;
-var COUNTER_ID = 'iterations';
-var RANDOMIZE_FACTOR_ID = '#randomize-factor';
+var COUNTER_CLASS_NAME = '.iterations-value';
+var RANDOMIZE_FACTOR_CLASS_NAME = '.randomize-factor';
 
 /***/ }),
 
@@ -94,8 +94,6 @@ var GameController = function GameController(gameModel, gameView) {
 
   _classCallCheck(this, GameController);
 
-  _defineProperty(this, "oneDimensionSize", 100);
-
   _defineProperty(this, "intervalId", null);
 
   _defineProperty(this, "counter", 0);
@@ -123,27 +121,39 @@ var GameController = function GameController(gameModel, gameView) {
     clearInterval(_this.intervalId);
   });
 
-  _defineProperty(this, "getRandomIndex", function () {
-    return Math.ceil(Math.random() * _this.oneDimensionSize);
+  _defineProperty(this, "getRandomIndexI", function () {
+    return Math.ceil(Math.random() * _this.ySize);
+  });
+
+  _defineProperty(this, "getRandomIndexJ", function () {
+    return Math.ceil(Math.random() * _this.xSize);
   });
 
   _defineProperty(this, "onRandomize", function () {
     var randomizeFactor = _this.gameView.getRandomizeFactor();
 
-    var numberOfRandomElements = Math.pow(_this.oneDimensionSize, 2) * randomizeFactor;
+    var numberOfRandomElements = Math.floor(_this.xSize * _this.ySize * Number(randomizeFactor));
     _this.gameModel.initialData = new Array(numberOfRandomElements).fill('').map(function () {
-      return "".concat(_this.getRandomIndex(), "-").concat(_this.getRandomIndex());
+      return "".concat(_this.getRandomIndexI(), "-").concat(_this.getRandomIndexJ());
     });
-
-    _this.initGame();
-  });
-
-  _defineProperty(this, "initGame", function () {
-    _this.gameModel.oneDimensionSize = _this.oneDimensionSize;
 
     _this.gameModel.createDataModel();
 
-    _this.gameView.oneDimensionSize = _this.oneDimensionSize;
+    _this.gameView.renderGrid(_this.gameModel.dataModel, _this.counter);
+  });
+
+  _defineProperty(this, "initGame", function () {
+    var _this$gameView$getVie = _this.gameView.getViewPortSize(),
+        xSize = _this$gameView$getVie.xSize,
+        ySize = _this$gameView$getVie.ySize;
+
+    _this.xSize = xSize;
+    _this.ySize = ySize;
+    _this.gameModel.xSize = xSize;
+    _this.gameModel.ySize = ySize;
+
+    _this.gameModel.createDataModel();
+
     _this.gameView.onStartGame = _this.onStartGame;
     _this.gameView.onStopGame = _this.onStopGame;
     _this.gameView.onPauseGame = _this.onPauseGame;
@@ -154,8 +164,7 @@ var GameController = function GameController(gameModel, gameView) {
 
   this.gameModel = gameModel;
   this.gameView = gameView;
-} // TODO: make customizable
-;
+};
 
 /***/ }),
 
@@ -236,7 +245,9 @@ var GameModel = function GameModel(initialData) {
 
   _classCallCheck(this, GameModel);
 
-  _defineProperty(this, "oneDimensionSize", null);
+  _defineProperty(this, "xSize", 0);
+
+  _defineProperty(this, "ySize", 0);
 
   _defineProperty(this, "previousDataModel", []);
 
@@ -245,7 +256,7 @@ var GameModel = function GameModel(initialData) {
   _defineProperty(this, "generationDiff", []);
 
   _defineProperty(this, "createDataModel", function () {
-    var dataModelMock = new Array(_this.oneDimensionSize).fill(new Array(_this.oneDimensionSize).fill(0));
+    var dataModelMock = new Array(_this.ySize).fill(new Array(_this.xSize).fill(0));
     _this.dataModel = dataModelMock.map(function (row, i) {
       return row.map(function (_, j) {
         var id = "".concat(i, "-").concat(j);
@@ -257,8 +268,7 @@ var GameModel = function GameModel(initialData) {
   });
 
   _defineProperty(this, "resetDataModel", function () {
-    _this.dataModel = _this.createDataModel();
-    return _this.dataModel;
+    return _this.createDataModel();
   });
 
   _defineProperty(this, "getNeighboursIndices", function (i, j) {
@@ -326,7 +336,7 @@ var GameModel = function GameModel(initialData) {
     _this.generationDiff = _this.previousDataModel.reduce(function (acc, _, i) {
       var diffByRow = _this.previousDataModel[i].reduce(function (indices, alive, j) {
         if (_this.dataModel[i][j] !== alive) {
-          indices.push(i * _this.oneDimensionSize + j);
+          indices.push(i * _this.xSize + j);
         }
 
         return indices;
@@ -379,19 +389,38 @@ var GameView = function GameView() {
 
   _defineProperty(this, "grid", null);
 
-  _defineProperty(this, "startGameButton", document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RUN_GAME_BTN));
+  _defineProperty(this, "startGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RUN_GAME_BTN));
 
-  _defineProperty(this, "pauseGameButton", document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.PAUSE_GAME_BTN));
+  _defineProperty(this, "pauseGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.PAUSE_GAME_BTN));
 
-  _defineProperty(this, "stopGameButton", document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.STOP_GAME_BTN));
+  _defineProperty(this, "stopGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.STOP_GAME_BTN));
 
-  _defineProperty(this, "randomizeButton", document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_BTN));
+  _defineProperty(this, "randomizeButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_BTN));
 
-  _defineProperty(this, "randomizeFactorInput", document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_FACTOR_ID));
+  _defineProperty(this, "randomizeFactorInput", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_FACTOR_CLASS_NAME));
+
+  _defineProperty(this, "counterEl", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.COUNTER_CLASS_NAME));
 
   _defineProperty(this, "randomizeFactor", 0);
 
-  _defineProperty(this, "counterEl", document.getElementById(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.COUNTER_ID));
+  _defineProperty(this, "xSize", 0);
+
+  _defineProperty(this, "ySize", 0);
+
+  _defineProperty(this, "gridWidth", 0);
+
+  _defineProperty(this, "gridHeight", 0);
+
+  _defineProperty(this, "getViewPortSize", function () {
+    _this.gridWidth = Math.floor(document.documentElement.clientWidth - 150);
+    _this.gridHeight = Math.floor(document.documentElement.clientHeight);
+    _this.xSize = Math.floor(_this.gridWidth / 8);
+    _this.ySize = Math.floor(_this.gridHeight / 8);
+    return {
+      xSize: _this.xSize,
+      ySize: _this.ySize
+    };
+  });
 
   _defineProperty(this, "getRandomizeFactor", function () {
     return _this.randomizeFactorInput.value;
@@ -428,12 +457,12 @@ var GameView = function GameView() {
   });
 
   _defineProperty(this, "generateGridMarkup", function (dataModel) {
-    for (var i = 0; i < _this.oneDimensionSize; i += 1) {
-      for (var j = 0; j < _this.oneDimensionSize; j += 1) {
+    for (var i = 0; i < _this.ySize; i += 1) {
+      for (var j = 0; j < _this.xSize; j += 1) {
         var cell = document.createElement('span');
         var cellData = dataModel[i][j];
         var isSelectedStringified = String(Boolean(cellData));
-        cell.setAttribute('id', i * _this.oneDimensionSize + j);
+        cell.setAttribute('id', i * _this.xSize + j);
         cell.setAttribute('class', 'cell');
         cell.setAttribute('data-type', 'cell');
         cell.setAttribute('data-selected', isSelectedStringified);
@@ -443,42 +472,56 @@ var GameView = function GameView() {
     }
   });
 
+  _defineProperty(this, "applyGridStyles", function () {
+    _this.grid.classList.add(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.GRID_CLASS_NAME);
+
+    _this.grid.style.width = "".concat(_this.gridWidth, "px");
+    _this.grid.style.minWidth = "".concat(_this.gridWidth, "px");
+    _this.grid.style.height = "".concat(_this.gridHeight, "px");
+    _this.grid.style.minHeight = "".concat(_this.gridHeight, "px");
+    _this.grid.style.gridTemplateRow = "repeat(".concat(_this.ySize, ", 1fr)");
+    _this.grid.style.gridTemplateColumns = "repeat(".concat(_this.xSize, ", 1fr)");
+  });
+
+  _defineProperty(this, "attachControlsEventListeners", function () {
+    _this.startGameButton.addEventListener('click', _this.startGameHandler);
+
+    _this.pauseGameButton.addEventListener('click', _this.pauseGameHandler);
+
+    _this.stopGameButton.addEventListener('click', _this.stopGameHandler);
+
+    _this.randomizeButton.addEventListener('click', _this.randomizeHandler);
+  });
+
+  _defineProperty(this, "removeControlsEventListeners", function () {
+    _this.startGameButton.removeEventListener('click', _this.startGameHandler);
+
+    _this.pauseGameButton.removeEventListener('click', _this.pauseGameHandler);
+
+    _this.stopGameButton.removeEventListener('click', _this.stopGameHandler);
+  });
+
   _defineProperty(this, "renderGrid", function (dataModel, counter) {
     var existingGrid = document.body.querySelector(".".concat(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.GRID_CLASS_NAME));
 
     if (existingGrid) {
       existingGrid.remove();
 
-      _this.startGameButton.removeEventListener('click', _this.startGameHandler);
-
-      _this.pauseGameButton.removeEventListener('click', _this.pauseGameHandler);
-
-      _this.stopGameButton.removeEventListener('click', _this.stopGameHandler);
+      _this.removeControlsEventListeners();
     }
 
-    _this.counterEl.innerText = counter;
     _this.grid = document.createElement('main');
 
-    _this.grid.classList.add(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.GRID_CLASS_NAME);
-
-    _this.grid.style['grid-template-row'] = "repeat(".concat(_this.oneDimensionSize, ", 1fr)");
-    _this.grid.style['grid-template-columns'] = "repeat(".concat(_this.oneDimensionSize, ", 1fr)");
+    _this.applyGridStyles();
 
     _this.generateGridMarkup(dataModel);
 
+    _this.attachControlsEventListeners();
+
     document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.LEFT_PANEL_CLASS_NAME).insertAdjacentElement('afterend', _this.grid);
-
-    _this.startGameButton.addEventListener('click', _this.startGameHandler);
-
-    _this.pauseGameButton.addEventListener('click', _this.pauseGameHandler);
-
     _this.pauseGameButton.disabled = true;
-
-    _this.stopGameButton.addEventListener('click', _this.stopGameHandler);
-
     _this.stopGameButton.disabled = true;
-
-    _this.randomizeButton.addEventListener('click', _this.randomizeHandler);
+    _this.counterEl.innerText = counter;
   });
 
   _defineProperty(this, "updateGrid", function (generationDiff, counter) {
@@ -487,7 +530,7 @@ var GameView = function GameView() {
       var selected = cell.dataset.selected === 'true' ? 'false' : 'true';
       cell.setAttribute('data-selected', selected);
     });
-    document.getElementById(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.COUNTER_ID).innerHTML = counter;
+    document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.COUNTER_CLASS_NAME).innerHTML = counter;
   });
 };
 
@@ -517,7 +560,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "* {\n  box-sizing: border-box;\n}\n\nbody {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: whitesmoke;\n  width: 100%;\n  height: 100vh;\n  margin: 0;\n}\n\nbutton {\n  background-color: white;\n  width: 130px;\n  border: 1px solid lightgrey;\n  padding: 4px;\n  border-radius: 4px;\n}\nbutton:hover:not(:disabled) {\n  cursor: pointer;\n  background-color: lightgray;\n}\nbutton:disabled {\n  cursor: not-allowed;\n}\n\nlabel:hover {\n  cursor: pointer;\n}\n\n.left-panel {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 150px;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  align-items: center;\n  border-color: cadetblue;\n  border-width: 0 1px 0 0;\n  border-style: solid;\n  padding: 10px;\n  background-color: white;\n  box-shadow: 4px 2px 10px #eeeeee;\n}\n\n.main-grid {\n  width: 700px;\n  height: 700px;\n  display: grid;\n  grid-gap: 0.05rem;\n}\n\n.cell {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: #c0a9bd;\n  width: 100%;\n  height: 100%;\n}\n.cell:hover {\n  background-color: gainsboro;\n}\n.cell[data-selected=true] {\n  background-color: #d96846;\n}\n\n.cell-data {\n  font-size: 12px;\n}\n\n.information-panel {\n  margin-bottom: 40px;\n}\n\n#group1 {\n  margin-bottom: 20px;\n  width: 130px;\n  border: 1px solid lightgrey;\n  border-radius: 4px;\n  font-size: 12px;\n}\n\n.randomize {\n  margin-bottom: 20px;\n}\n\n#randomize-factor {\n  width: 130px;\n  margin-bottom: 5px;\n}\n\n.run-game {\n  margin-bottom: 20px;\n}\n\n.pause-game {\n  margin-bottom: 5px;\n}\n\n.iterations {\n  text-align: center;\n}\n\n#iterations {\n  font-weight: bold;\n}", "",{"version":3,"sources":["webpack://src/styles.scss"],"names":[],"mappings":"AAAA;EACE,sBAAA;AACF;;AAGA;EACE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,4BAAA;EACA,WAAA;EACA,aAAA;EACA,SAAA;AAAF;;AAGA;EACE,uBAAA;EACA,YAAA;EACA,2BAAA;EACA,YAAA;EACA,kBAAA;AAAF;AAEE;EACE,eAAA;EACA,2BAAA;AAAJ;AAGE;EACE,mBAAA;AADJ;;AAKA;EACE,eAAA;AAFF;;AAKA;EACE,kBAAA;EACA,OAAA;EACA,MAAA;EACA,YAAA;EACA,aAAA;EACA,aAAA;EACA,sBAAA;EACA,2BAAA;EACA,mBAAA;EACA,uBAAA;EACA,uBAAA;EACA,mBAAA;EACA,aAAA;EACA,uBAAA;EACA,gCAAA;AAFF;;AAKA;EACE,YAAA;EACA,aAAA;EACA,aAAA;EACA,iBAAA;AAFF;;AAKA;EACE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,yBAAA;EACA,WAAA;EACA,YAAA;AAFF;AAIE;EACE,2BAAA;AAFJ;AAKE;EACE,yBAAA;AAHJ;;AAOA;EACE,eAAA;AAJF;;AAOA;EACE,mBAAA;AAJF;;AAOA;EACE,mBAAA;EACA,YAAA;EACA,2BAAA;EACA,kBAAA;EACA,eAAA;AAJF;;AAOA;EACE,mBAAA;AAJF;;AAOA;EACE,YAAA;EACA,kBAAA;AAJF;;AAOA;EACE,mBAAA;AAJF;;AAOA;EACE,kBAAA;AAJF;;AAOA;EACE,kBAAA;AAJF;;AAOA;EACE,iBAAA;AAJF","sourcesContent":["* {\r\n  box-sizing: border-box;\r\n}\r\n\r\n\r\nbody {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  background-color: whitesmoke;\r\n  width: 100%;\r\n  height: 100vh;\r\n  margin: 0;\r\n}\r\n\r\nbutton {\r\n  background-color: white;\r\n  width: 130px;\r\n  border: 1px solid lightgrey;\r\n  padding: 4px;\r\n  border-radius: 4px;\r\n\r\n  &:hover:not(:disabled) {\r\n    cursor: pointer;\r\n    background-color: lightgray;\r\n  }\r\n\r\n  &:disabled {\r\n    cursor: not-allowed;\r\n  }\r\n}\r\n\r\nlabel:hover {\r\n  cursor: pointer;\r\n}\r\n\r\n.left-panel {\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n  width: 150px;\r\n  height: 100vh;\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: flex-start;\r\n  align-items: center;\r\n  border-color: cadetblue;\r\n  border-width: 0 1px 0 0;\r\n  border-style: solid;\r\n  padding: 10px;\r\n  background-color: white;\r\n  box-shadow: 4px 2px 10px #eeeeee;\r\n}\r\n\r\n.main-grid {\r\n  width: 700px;\r\n  height: 700px;\r\n  display: grid;\r\n  grid-gap: 0.05rem;\r\n}\r\n\r\n.cell {\r\n  display: flex;\r\n  justify-content: center;\r\n  align-items: center;\r\n  background-color: #c0a9bd;\r\n  width: 100%;\r\n  height: 100%;\r\n\r\n  &:hover {\r\n    background-color: gainsboro;\r\n  }\r\n\r\n  &[data-selected=\"true\"] {\r\n    background-color: #d96846;\r\n  }\r\n}\r\n\r\n.cell-data {\r\n  font-size: 12px;\r\n}\r\n\r\n.information-panel {\r\n  margin-bottom: 40px;\r\n}\r\n\r\n#group1 {\r\n  margin-bottom: 20px;\r\n  width: 130px;\r\n  border: 1px solid lightgrey;\r\n  border-radius: 4px;\r\n  font-size: 12px;\r\n}\r\n\r\n.randomize {\r\n  margin-bottom: 20px;\r\n}\r\n\r\n#randomize-factor {\r\n  width: 130px;\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.run-game {\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.pause-game {\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.iterations {\r\n  text-align: center;\r\n}\r\n\r\n#iterations {\r\n  font-weight: bold;\r\n}\r\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, "* {\n  box-sizing: border-box;\n  font-family: \"Roboto\", sans-serif;\n}\n\nbody {\n  display: flex;\n  width: 100%;\n  height: 100vh;\n  margin: 0;\n  justify-content: flex-end;\n  align-items: center;\n  background-color: whitesmoke;\n}\n\nbutton {\n  width: 130px;\n  padding: 4px;\n  background-color: white;\n  border: 1px solid lightgrey;\n  border-radius: 4px;\n}\nbutton:hover:not(:disabled) {\n  cursor: pointer;\n  background-color: lightgray;\n}\nbutton:disabled {\n  cursor: not-allowed;\n}\n\ninput {\n  border: 1px solid lightgrey;\n  padding: 4px;\n  border-radius: 4px;\n}\n\nlabel {\n  text-align: center;\n}\nlabel:hover {\n  cursor: pointer;\n}\n\n.left-panel {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 150px;\n  height: 100vh;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  align-items: center;\n  border-color: cadetblue;\n  border-width: 0 1px 0 0;\n  border-style: solid;\n  padding: 10px;\n  background-color: rgba(255, 255, 255, 0.8);\n}\n.left-panel * {\n  font-size: 12px;\n}\n\n.main-grid {\n  display: grid;\n  width: calc(100% - 150px);\n  height: 100%;\n  grid-gap: 0.05rem;\n}\n\n.cell {\n  display: flex;\n  width: 100%;\n  height: 100%;\n  justify-content: center;\n  align-items: center;\n  background-color: #c0a9bd;\n}\n.cell:hover {\n  background-color: gainsboro;\n}\n.cell[data-selected=true] {\n  background-color: #d96846;\n}\n\n.information-panel {\n  margin-bottom: 40px;\n  font-size: 14px;\n}\n\n.randomize {\n  margin-bottom: 20px;\n}\n\n.randomize-factor {\n  width: 130px;\n  margin-bottom: 5px;\n}\n\n.run-game {\n  margin-bottom: 5px;\n}\n\n.pause-game {\n  margin-bottom: 5px;\n}\n\n.iterations {\n  text-align: center;\n}\n\n.wiki {\n  margin-top: auto;\n}", "",{"version":3,"sources":["webpack://src/styles.scss"],"names":[],"mappings":"AAAA;EACE,sBAAA;EACA,iCAAA;AACF;;AAGA;EACE,aAAA;EACA,WAAA;EACA,aAAA;EACA,SAAA;EACA,yBAAA;EACA,mBAAA;EACA,4BAAA;AAAF;;AAGA;EACE,YAAA;EACA,YAAA;EACA,uBAAA;EACA,2BAAA;EACA,kBAAA;AAAF;AAEE;EACE,eAAA;EACA,2BAAA;AAAJ;AAGE;EACE,mBAAA;AADJ;;AAKA;EACE,2BAAA;EACA,YAAA;EACA,kBAAA;AAFF;;AAKA;EACE,kBAAA;AAFF;AAIE;EACE,eAAA;AAFJ;;AAMA;EACE,kBAAA;EACA,OAAA;EACA,MAAA;EACA,YAAA;EACA,aAAA;EACA,aAAA;EACA,sBAAA;EACA,2BAAA;EACA,mBAAA;EACA,uBAAA;EACA,uBAAA;EACA,mBAAA;EACA,aAAA;EACA,0CAAA;AAHF;AAKE;EACE,eAAA;AAHJ;;AAOA;EACE,aAAA;EACA,yBAAA;EACA,YAAA;EACA,iBAAA;AAJF;;AAOA;EACE,aAAA;EACA,WAAA;EACA,YAAA;EACA,uBAAA;EACA,mBAAA;EACA,yBAAA;AAJF;AAME;EACE,2BAAA;AAJJ;AAOE;EACE,yBAAA;AALJ;;AASA;EACE,mBAAA;EACA,eAAA;AANF;;AASA;EACE,mBAAA;AANF;;AASA;EACE,YAAA;EACA,kBAAA;AANF;;AASA;EACE,kBAAA;AANF;;AASA;EACE,kBAAA;AANF;;AASA;EACE,kBAAA;AANF;;AASA;EACE,gBAAA;AANF","sourcesContent":["* {\r\n  box-sizing: border-box;\r\n  font-family: 'Roboto', sans-serif;\r\n}\r\n\r\n\r\nbody {\r\n  display: flex;\r\n  width: 100%;\r\n  height: 100vh;\r\n  margin: 0;\r\n  justify-content: flex-end;\r\n  align-items: center;\r\n  background-color: whitesmoke;\r\n}\r\n\r\nbutton {\r\n  width: 130px;\r\n  padding: 4px;\r\n  background-color: white;\r\n  border: 1px solid lightgrey;\r\n  border-radius: 4px;\r\n\r\n  &:hover:not(:disabled) {\r\n    cursor: pointer;\r\n    background-color: lightgray;\r\n  }\r\n\r\n  &:disabled {\r\n    cursor: not-allowed;\r\n  }\r\n}\r\n\r\ninput {\r\n  border: 1px solid lightgrey;\r\n  padding: 4px;\r\n  border-radius: 4px;\r\n}\r\n\r\nlabel{\r\n  text-align: center;\r\n\r\n  &:hover {\r\n    cursor: pointer;\r\n  }\r\n}\r\n\r\n.left-panel {\r\n  position: absolute;\r\n  left: 0;\r\n  top: 0;\r\n  width: 150px;\r\n  height: 100vh;\r\n  display: flex;\r\n  flex-direction: column;\r\n  justify-content: flex-start;\r\n  align-items: center;\r\n  border-color: cadetblue;\r\n  border-width: 0 1px 0 0;\r\n  border-style: solid;\r\n  padding: 10px;\r\n  background-color: rgba(256, 256, 256, 0.8);\r\n\r\n  * {\r\n    font-size: 12px;\r\n  }\r\n}\r\n\r\n.main-grid {\r\n  display: grid;\r\n  width: calc(100% - 150px);\r\n  height: 100%;\r\n  grid-gap: 0.05rem;\r\n}\r\n\r\n.cell {\r\n  display: flex;\r\n  width: 100%;\r\n  height: 100%;\r\n  justify-content: center;\r\n  align-items: center;\r\n  background-color: #c0a9bd;\r\n\r\n  &:hover {\r\n    background-color: gainsboro;\r\n  }\r\n\r\n  &[data-selected=\"true\"] {\r\n    background-color: #d96846;\r\n  }\r\n}\r\n\r\n.information-panel {\r\n  margin-bottom: 40px;\r\n  font-size: 14px;\r\n}\r\n\r\n.randomize {\r\n  margin-bottom: 20px;\r\n}\r\n\r\n.randomize-factor {\r\n  width: 130px;\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.run-game {\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.pause-game {\r\n  margin-bottom: 5px;\r\n}\r\n\r\n.iterations {\r\n  text-align: center;\r\n}\r\n\r\n.wiki {\r\n  margin-top: auto;\r\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
