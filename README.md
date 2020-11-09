@@ -15,6 +15,6 @@
 - [x] Performance on current solution - LG01
 - [ ] Code style
 - [x] Move function approach to class-based MVC - LG02
-- [ ] TS support
+- [ ] TS support - LG03
 - [ ] Move to canvas solution
 - [ ] Production config
