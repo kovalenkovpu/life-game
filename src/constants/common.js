@@ -5,5 +5,5 @@ export const STOP_GAME_BTN = '.stop-game';
 export const PAUSE_GAME_BTN = '.pause-game';
 export const RANDOMIZE_BTN = '.randomize';
 export const DELAY = 32;
-export const COUNTER_ID = 'iterations';
-export const RANDOMIZE_FACTOR_ID = '#randomize-factor';
+export const COUNTER_CLASS_NAME = '.iterations-value';
+export const RANDOMIZE_FACTOR_CLASS_NAME = '.randomize-factor';

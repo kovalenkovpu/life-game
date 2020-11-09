@@ -4,9 +4,6 @@ export class GameController {
     this.gameView = gameView;
   }
 
-  // TODO: make customizable
-  oneDimensionSize = 100;
-
   intervalId = null;
 
   counter = 0;
@@ -35,25 +32,32 @@ export class GameController {
     clearInterval(this.intervalId);
   };
 
-  getRandomIndex = () => Math.ceil((Math.random() * this.oneDimensionSize));
+  getRandomIndexI = () => Math.ceil((Math.random() * this.ySize));
+
+  getRandomIndexJ = () => Math.ceil((Math.random() * this.xSize));
 
   // When randomize button is clicked
   onRandomize = () => {
     const randomizeFactor = this.gameView.getRandomizeFactor();
-    const numberOfRandomElements = this.oneDimensionSize ** 2 * randomizeFactor;
+    const numberOfRandomElements = Math.floor(this.xSize * this.ySize * Number(randomizeFactor));
 
     this.gameModel.initialData = new Array(numberOfRandomElements).fill('')
-      .map(() => `${this.getRandomIndex()}-${this.getRandomIndex()}`);
+      .map(() => `${this.getRandomIndexI()}-${this.getRandomIndexJ()}`);
+    this.gameModel.createDataModel();
 
-    this.initGame();
+    this.gameView.renderGrid(this.gameModel.dataModel, this.counter);
   };
 
   // Init app
   initGame = () => {
-    this.gameModel.oneDimensionSize = this.oneDimensionSize;
+    const { xSize, ySize } = this.gameView.getViewPortSize();
+    this.xSize = xSize;
+    this.ySize = ySize;
+
+    this.gameModel.xSize = xSize;
+    this.gameModel.ySize = ySize;
     this.gameModel.createDataModel();
 
-    this.gameView.oneDimensionSize = this.oneDimensionSize;
     this.gameView.onStartGame = this.onStartGame;
     this.gameView.onStopGame = this.onStopGame;
     this.gameView.onPauseGame = this.onPauseGame;

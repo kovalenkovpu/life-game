@@ -1,23 +1,24 @@
 * {
   box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
 }
 
 
 body {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: whitesmoke;
   width: 100%;
   height: 100vh;
   margin: 0;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: whitesmoke;
 }
 
 button {
-  background-color: white;
   width: 130px;
-  border: 1px solid lightgrey;
   padding: 4px;
+  background-color: white;
+  border: 1px solid lightgrey;
   border-radius: 4px;
 
   &:hover:not(:disabled) {
@@ -30,8 +31,18 @@ button {
   }
 }
 
-label:hover {
-  cursor: pointer;
+input {
+  border: 1px solid lightgrey;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+label{
+  text-align: center;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .left-panel {
@@ -48,24 +59,27 @@ label:hover {
   border-width: 0 1px 0 0;
   border-style: solid;
   padding: 10px;
-  background-color: white;
-  box-shadow: 4px 2px 10px #eeeeee;
+  background-color: rgba(256, 256, 256, 0.8);
+
+  * {
+    font-size: 12px;
+  }
 }
 
 .main-grid {
-  width: 700px;
-  height: 700px;
   display: grid;
+  width: calc(100% - 150px);
+  height: 100%;
   grid-gap: 0.05rem;
 }
 
 .cell {
   display: flex;
+  width: 100%;
+  height: 100%;
   justify-content: center;
   align-items: center;
   background-color: #c0a9bd;
-  width: 100%;
-  height: 100%;
 
   &:hover {
     background-color: gainsboro;
@@ -76,33 +90,22 @@ label:hover {
   }
 }
 
-.cell-data {
-  font-size: 12px;
-}
-
 .information-panel {
   margin-bottom: 40px;
-}
-
-#group1 {
-  margin-bottom: 20px;
-  width: 130px;
-  border: 1px solid lightgrey;
-  border-radius: 4px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .randomize {
   margin-bottom: 20px;
 }
 
-#randomize-factor {
+.randomize-factor {
   width: 130px;
   margin-bottom: 5px;
 }
 
 .run-game {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .pause-game {
@@ -113,6 +116,6 @@ label:hover {
   text-align: center;
 }
 
-#iterations {
-  font-weight: bold;
+.wiki {
+  margin-top: auto;
 }
