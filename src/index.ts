@@ -4,7 +4,7 @@ import { GameView } from 'src/views/GameView';
 import { GameModel } from 'src/models/GameModel';
 import { GameController } from 'src/controllers/GameController';
 
-import { initialData } from './constants/initialData';
+import { initialData } from 'src/constants/initialData';
 
 window.addEventListener('load', () => {
   const gameModel = new GameModel(initialData);

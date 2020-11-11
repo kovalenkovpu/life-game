@@ -7,10 +7,10 @@ module.exports = {
     alias: {
       src: path.resolve(__dirname, 'src'),
     },
-    extensions: ['.js'],
+    extensions: ['.ts', '.js'],
   },
   entry: {
-    'main.js': './src/index.js',
+    'main.js': './src/index.ts',
     'style.css': './src/styles.scss',
   },
   output: {
@@ -38,15 +38,13 @@ module.exports = {
         ],
       },
       {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-            plugins: ['@babel/plugin-proposal-class-properties'],
+        test: /\.ts$/,
+        use: [
+          {
+            loader: 'babel-loader',
           },
-        },
+        ],
+        exclude: [/node_modules/, /docs/],
       },
     ],
   },
