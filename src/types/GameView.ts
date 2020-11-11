@@ -1,24 +1,11 @@
 import { DataModelType, GenerationDiff } from './GameModel';
 
 export interface ViewPortSizeType {
-  xSize: number;
-  ySize: number;
+  xGridSize: number;
+  yGridSize: number;
 }
 
 export interface GameViewInterface {
-  grid: HTMLSpanElement;
-  startGameButton: HTMLButtonElement | null;
-  pauseGameButton: HTMLButtonElement | null;
-  stopGameButton: HTMLButtonElement | null;
-  randomizeButton: HTMLButtonElement | null;
-  randomizeFactorInput: HTMLInputElement | null;
-  counterEl: HTMLInputElement | null;
-  randomizeFactor: number;
-  xSize: number;
-  ySize: number;
-  gridWidth: number;
-  gridHeight: number;
-
   onStartGame(): void;
   onPauseGame(): void;
   onStopGame(): void;

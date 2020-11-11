@@ -1,6 +1,6 @@
 import { GameControllerInterface } from 'src/types/GameController';
 import { GameModelInterface } from 'src/types/GameModel';
-import { GameViewInterface } from 'src/types/GameView';
+import { GameViewInterface, ViewPortSizeType } from 'src/types/GameView';
 
 export class GameController implements GameControllerInterface {
   constructor(
@@ -8,16 +8,15 @@ export class GameController implements GameControllerInterface {
     public gameView: GameViewInterface,
   ) { }
 
-  intervalId = 0;
+  private xGridSize: ViewPortSizeType['xGridSize'];
 
-  counter = 0;
+  private yGridSize: ViewPortSizeType['yGridSize'];
 
-  xSize = 0;
+  private counter = 0;
 
-  ySize = 0;
+  private intervalId = 0;
 
-  // When start button is clicked
-  onStartGame = (): void => {
+  private onStartGame = (): void => {
     this.intervalId = setInterval(() => {
       const generationDiff = this.gameModel.calculateNextGenerationDiff();
 
@@ -26,8 +25,7 @@ export class GameController implements GameControllerInterface {
     });
   };
 
-  // When stop button is clicked
-  onStopGame = (): void => {
+  private onStopGame = (): void => {
     clearInterval(this.intervalId);
 
     this.counter = 0;
@@ -35,19 +33,16 @@ export class GameController implements GameControllerInterface {
     this.gameView.renderGrid(this.gameModel.dataModel, this.counter);
   };
 
-  // When pause button is clicked
-  onPauseGame = (): void => {
-    clearInterval(this.intervalId);
-  };
+  private onPauseGame = (): void => clearInterval(this.intervalId);
 
-  private getRandomIndexI = (): number => Math.ceil((Math.random() * this.ySize));
+  private getRandomIndexI = (): number => Math.ceil((Math.random() * this.yGridSize));
 
-  private getRandomIndexJ = (): number => Math.ceil((Math.random() * this.xSize));
+  private getRandomIndexJ = (): number => Math.ceil((Math.random() * this.xGridSize));
 
-  // When randomize button is clicked
-  onRandomize = (): void => {
+  private onRandomize = (): void => {
     const randomizeFactor = this.gameView.getRandomizeFactor();
-    const numberOfRandomElements = Math.floor(this.xSize * this.ySize * Number(randomizeFactor));
+    const numberOfRandomElements = Math
+      .floor(this.xGridSize * this.yGridSize * Number(randomizeFactor));
 
     this.gameModel.initialData = new Array(numberOfRandomElements).fill('')
       .map(() => `${this.getRandomIndexI()}-${this.getRandomIndexJ()}`);
@@ -58,12 +53,12 @@ export class GameController implements GameControllerInterface {
 
   // Init app
   initGame = (): void => {
-    const { xSize, ySize } = this.gameView.getViewPortSize();
-    this.xSize = xSize;
-    this.ySize = ySize;
+    const { xGridSize, yGridSize } = this.gameView.getViewPortSize();
+    this.xGridSize = xGridSize;
+    this.yGridSize = yGridSize;
 
-    this.gameModel.xSize = xSize;
-    this.gameModel.ySize = ySize;
+    this.gameModel.xGridSize = xGridSize;
+    this.gameModel.yGridSize = yGridSize;
     this.gameModel.createDataModel();
 
     this.gameView.onStartGame = this.onStartGame;

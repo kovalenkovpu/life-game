@@ -1,4 +1,5 @@
 import { InitialDataType } from './common';
+import { ViewPortSizeType } from './GameView';
 
 export type DataModelType = number[][];
 export type NeighboursIndices = number[][];
@@ -6,11 +7,9 @@ export type GenerationDiff = number[];
 
 export interface GameModelInterface {
   initialData: InitialDataType;
-  xSize: number;
-  ySize: number;
-  previousDataModel: DataModelType;
+  xGridSize: ViewPortSizeType['xGridSize'];
+  yGridSize: ViewPortSizeType['yGridSize'];
   dataModel: DataModelType;
-  generationDiff: GenerationDiff;
 
   createDataModel(): DataModelType;
   resetDataModel(): DataModelType;

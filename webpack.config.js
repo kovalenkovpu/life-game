@@ -1,6 +1,10 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+// TODO:
+// import path from 'path';
+// import HtmlWebpackPlugin from 'html-webpack-plugin';
+
 module.exports = {
   mode: 'development',
   resolve: {
@@ -39,11 +43,7 @@ module.exports = {
       },
       {
         test: /\.ts$/,
-        use: [
-          {
-            loader: 'babel-loader',
-          },
-        ],
+        use: ['babel-loader'],
         exclude: [/node_modules/, /docs/],
       },
     ],

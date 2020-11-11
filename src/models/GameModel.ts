@@ -7,19 +7,20 @@ import {
   GenerationDiff,
   NeighboursIndices,
 } from 'src/types/GameModel';
+import { ViewPortSizeType } from 'src/types/GameView';
 
 export class GameModel implements GameModelInterface {
   constructor(public initialData: InitialDataType) { }
 
-  xSize = 0;
+  xGridSize: ViewPortSizeType['xGridSize'];
 
-  ySize = 0;
+  yGridSize: ViewPortSizeType['yGridSize'];
 
-  previousDataModel: DataModelType = [[]];
+  dataModel: DataModelType;
 
-  dataModel: DataModelType = [[]];
+  private previousDataModel: DataModelType;
 
-  generationDiff: GenerationDiff = [];
+  private generationDiff: GenerationDiff;
 
   private getNeighboursIndices = (i: number, j: number): NeighboursIndices => {
     const leftTopIndex = [i - 1, j - 1];
@@ -99,7 +100,7 @@ export class GameModel implements GameModelInterface {
           const diffByRow = this.previousDataModel[i]
             .reduce<number[]>((indices, alive, j) => {
               if (this.dataModel[i][j] !== alive) {
-                indices.push(i * this.xSize + j);
+                indices.push(i * this.xGridSize + j);
               }
 
               return indices;
@@ -116,8 +117,8 @@ export class GameModel implements GameModelInterface {
   };
 
   createDataModel = (): DataModelType => {
-    const dataModelTemplate = new Array<number[]>(this.ySize)
-      .fill(new Array(this.xSize).fill(0));
+    const dataModelTemplate = new Array<number[]>(this.yGridSize)
+      .fill(new Array(this.xGridSize).fill(0));
     const dataModel: DataModelType = dataModelTemplate
       .map((row, i) => row.map((_, j) => {
         const id = `${i}-${j}`;
