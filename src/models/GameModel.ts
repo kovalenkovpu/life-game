@@ -1,39 +1,28 @@
 import get from 'lodash/get';
 
-export class GameModel {
-  constructor(initialData) {
-    this.initialData = initialData;
-  }
+import { InitialDataType } from 'src/types/common';
+import {
+  DataModelType,
+  GameModelInterface,
+  GenerationDiff,
+  NeighboursIndices,
+} from 'src/types/GameModel';
+import { ViewPortSizeType } from 'src/types/GameView';
 
-  xSize = 0;
+export class GameModel implements GameModelInterface {
+  constructor(public initialData: InitialDataType) { }
 
-  ySize = 0;
+  xGridSize: ViewPortSizeType['xGridSize'];
 
-  previousDataModel = [];
+  yGridSize: ViewPortSizeType['yGridSize'];
 
-  dataModel = [];
+  dataModel: DataModelType;
 
-  generationDiff = [];
+  private previousDataModel: DataModelType;
 
-  createDataModel = () => {
-    const dataModelMock = new Array(this.ySize)
-      .fill(new Array(this.xSize).fill(0));
+  private generationDiff: GenerationDiff;
 
-    this.dataModel = dataModelMock
-      .map((row, i) => row.map((_, j) => {
-        const id = `${i}-${j}`;
-
-        return Number(this.initialData.includes(id));
-      }));
-
-    this.previousDataModel = [...this.dataModel];
-
-    return this.dataModel;
-  };
-
-  resetDataModel = () => this.createDataModel();
-
-  getNeighboursIndices = (i, j) => {
+  private getNeighboursIndices = (i: number, j: number): NeighboursIndices => {
     const leftTopIndex = [i - 1, j - 1];
     const topIndex = [i - 1, j];
     const topRightIndex = [i - 1, j + 1];
@@ -42,7 +31,8 @@ export class GameModel {
     const bottomLeftIndex = [i + 1, j - 1];
     const bottomIndex = [i + 1, j];
     const bottomRightIndex = [i + 1, j + 1];
-    const neighboursIndices = [
+
+    const neighboursIndices: NeighboursIndices = [
       leftTopIndex,
       topIndex,
       topRightIndex,
@@ -56,27 +46,25 @@ export class GameModel {
     return neighboursIndices;
   }
 
-  getSelectedCellNeighboursNumber = (i, j) => {
+  private getSelectedCellNeighboursNumber = (i: number, j: number): number => {
     const neighboursIndices = this.getNeighboursIndices(i, j);
 
     return neighboursIndices.reduce((acc, indices) => {
       const [currI, currJ] = indices;
       const cellData = get(get(this.dataModel, currI), currJ);
 
-      // eslint-disable-next-line no-extra-boolean-cast
-      if (Boolean(cellData)) {
-        // eslint-disable-next-line no-param-reassign
-        acc += 1;
+      if (cellData && cellData === 1) {
+        return acc + 1;
       }
 
       return acc;
     }, 0);
   };
 
-  calculateNextGeneration = () => {
+  private calculateNextGeneration = (): DataModelType => {
     this.previousDataModel = [...this.dataModel];
 
-    const currentGenerationData = this.dataModel
+    const currentGenerationData: DataModelType = this.dataModel
       .map(
         (_, i) => this.dataModel[i]
           .map((__, j) => this.getSelectedCellNeighboursNumber(i, j)),
@@ -103,16 +91,16 @@ export class GameModel {
     return this.dataModel;
   };
 
-  calculateNextGenerationDiff = () => {
+  calculateNextGenerationDiff = (): GenerationDiff => {
     this.calculateNextGeneration();
 
     this.generationDiff = this.previousDataModel
       .reduce(
         (acc, _, i) => {
           const diffByRow = this.previousDataModel[i]
-            .reduce((indices, alive, j) => {
+            .reduce<number[]>((indices, alive, j) => {
               if (this.dataModel[i][j] !== alive) {
-                indices.push(i * this.xSize + j);
+                indices.push(i * this.xGridSize + j);
               }
 
               return indices;
@@ -127,4 +115,22 @@ export class GameModel {
 
     return this.generationDiff;
   };
+
+  createDataModel = (): DataModelType => {
+    const dataModelTemplate = new Array<number[]>(this.yGridSize)
+      .fill(new Array(this.xGridSize).fill(0));
+    const dataModel: DataModelType = dataModelTemplate
+      .map((row, i) => row.map((_, j) => {
+        const id = `${i}-${j}`;
+
+        return Number(this.initialData.includes(id));
+      }));
+
+    this.dataModel = dataModel;
+    this.previousDataModel = [...this.dataModel];
+
+    return this.dataModel;
+  };
+
+  resetDataModel = (): DataModelType => this.createDataModel();
 }

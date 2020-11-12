@@ -1,9 +1,9 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/constants/common.js":
+/***/ "./src/constants/common.ts":
 /*!*********************************!*\
-  !*** ./src/constants/common.js ***!
+  !*** ./src/constants/common.ts ***!
   \*********************************/
 /*! namespace exports */
 /*! export COUNTER_CLASS_NAME [provided] [no usage info] [missing usage info prevents renaming] */
@@ -32,21 +32,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "COUNTER_CLASS_NAME": () => /* binding */ COUNTER_CLASS_NAME,
 /* harmony export */   "RANDOMIZE_FACTOR_CLASS_NAME": () => /* binding */ RANDOMIZE_FACTOR_CLASS_NAME
 /* harmony export */ });
-var GRID_CLASS_NAME = 'main-grid';
-var LEFT_PANEL_CLASS_NAME = '.left-panel';
-var RUN_GAME_BTN = '.run-game';
-var STOP_GAME_BTN = '.stop-game';
-var PAUSE_GAME_BTN = '.pause-game';
-var RANDOMIZE_BTN = '.randomize';
-var DELAY = 32;
-var COUNTER_CLASS_NAME = '.iterations-value';
-var RANDOMIZE_FACTOR_CLASS_NAME = '.randomize-factor';
+const GRID_CLASS_NAME = 'main-grid';
+const LEFT_PANEL_CLASS_NAME = '.left-panel';
+const RUN_GAME_BTN = '.run-game';
+const STOP_GAME_BTN = '.stop-game';
+const PAUSE_GAME_BTN = '.pause-game';
+const RANDOMIZE_BTN = '.randomize';
+const DELAY = 32;
+const COUNTER_CLASS_NAME = '.iterations-value';
+const RANDOMIZE_FACTOR_CLASS_NAME = '.randomize-factor';
 
 /***/ }),
 
-/***/ "./src/constants/initialData.js":
+/***/ "./src/constants/initialData.ts":
 /*!**************************************!*\
-  !*** ./src/constants/initialData.js ***!
+  !*** ./src/constants/initialData.ts ***!
   \**************************************/
 /*! namespace exports */
 /*! export initialData [provided] [no usage info] [missing usage info prevents renaming] */
@@ -59,7 +59,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "initialData": () => /* binding */ initialData
 /* harmony export */ });
-var initialData = ['4-3', '4-5', '5-4', '5-5', '6-4', // glider
+const initialData = ['4-3', '4-5', '5-4', '5-5', '6-4', // glider
 '40-39', '40-41', '41-40', '41-41', '42-40', // glider
 '60-59', '60-61', '61-60', '61-61', '62-60', '61-62', '62-62', // custom
 '60-39', '60-41', '61-40', '61-41', '62-40', '61-42', '62-42', // custom
@@ -70,9 +70,9 @@ var initialData = ['4-3', '4-5', '5-4', '5-5', '6-4', // glider
 
 /***/ }),
 
-/***/ "./src/controllers/GameController.js":
+/***/ "./src/controllers/GameController.ts":
 /*!*******************************************!*\
-  !*** ./src/controllers/GameController.js ***!
+  !*** ./src/controllers/GameController.ts ***!
   \*******************************************/
 /*! namespace exports */
 /*! export GameController [provided] [no usage info] [missing usage info prevents renaming] */
@@ -85,92 +85,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "GameController": () => /* binding */ GameController
 /* harmony export */ });
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var GameController = function GameController(gameModel, gameView) {
-  var _this = this;
+class GameController {
+  constructor(gameModel, gameView) {
+    this.gameModel = gameModel;
+    this.gameView = gameView;
 
-  _classCallCheck(this, GameController);
+    _defineProperty(this, "xGridSize", void 0);
 
-  _defineProperty(this, "intervalId", null);
+    _defineProperty(this, "yGridSize", void 0);
 
-  _defineProperty(this, "counter", 0);
+    _defineProperty(this, "counter", 0);
 
-  _defineProperty(this, "onStartGame", function () {
-    _this.intervalId = setInterval(function () {
-      var generationDiff = _this.gameModel.calculateNextGenerationDiff();
+    _defineProperty(this, "intervalId", 0);
 
-      _this.counter += 1;
-
-      _this.gameView.updateGrid(generationDiff, _this.counter);
-    });
-  });
-
-  _defineProperty(this, "onStopGame", function () {
-    clearInterval(_this.intervalId);
-    _this.counter = 0;
-
-    _this.gameModel.resetDataModel();
-
-    _this.gameView.renderGrid(_this.gameModel.dataModel, _this.counter);
-  });
-
-  _defineProperty(this, "onPauseGame", function () {
-    clearInterval(_this.intervalId);
-  });
-
-  _defineProperty(this, "getRandomIndexI", function () {
-    return Math.ceil(Math.random() * _this.ySize);
-  });
-
-  _defineProperty(this, "getRandomIndexJ", function () {
-    return Math.ceil(Math.random() * _this.xSize);
-  });
-
-  _defineProperty(this, "onRandomize", function () {
-    var randomizeFactor = _this.gameView.getRandomizeFactor();
-
-    var numberOfRandomElements = Math.floor(_this.xSize * _this.ySize * Number(randomizeFactor));
-    _this.gameModel.initialData = new Array(numberOfRandomElements).fill('').map(function () {
-      return "".concat(_this.getRandomIndexI(), "-").concat(_this.getRandomIndexJ());
+    _defineProperty(this, "onStartGame", () => {
+      this.intervalId = setInterval(() => {
+        const generationDiff = this.gameModel.calculateNextGenerationDiff();
+        this.counter += 1;
+        this.gameView.updateGrid(generationDiff, this.counter);
+      });
     });
 
-    _this.gameModel.createDataModel();
+    _defineProperty(this, "onStopGame", () => {
+      clearInterval(this.intervalId);
+      this.counter = 0;
+      this.gameModel.resetDataModel();
+      this.gameView.renderGrid(this.gameModel.dataModel, this.counter);
+    });
 
-    _this.gameView.renderGrid(_this.gameModel.dataModel, _this.counter);
-  });
+    _defineProperty(this, "onPauseGame", () => clearInterval(this.intervalId));
 
-  _defineProperty(this, "initGame", function () {
-    var _this$gameView$getVie = _this.gameView.getViewPortSize(),
-        xSize = _this$gameView$getVie.xSize,
-        ySize = _this$gameView$getVie.ySize;
+    _defineProperty(this, "getRandomIndexI", () => Math.ceil(Math.random() * this.yGridSize));
 
-    _this.xSize = xSize;
-    _this.ySize = ySize;
-    _this.gameModel.xSize = xSize;
-    _this.gameModel.ySize = ySize;
+    _defineProperty(this, "getRandomIndexJ", () => Math.ceil(Math.random() * this.xGridSize));
 
-    _this.gameModel.createDataModel();
+    _defineProperty(this, "onRandomize", () => {
+      const randomizeFactor = this.gameView.getRandomizeFactor();
+      const numberOfRandomElements = Math.floor(this.xGridSize * this.yGridSize * Number(randomizeFactor));
+      this.gameModel.initialData = new Array(numberOfRandomElements).fill('').map(() => `${this.getRandomIndexI()}-${this.getRandomIndexJ()}`);
+      this.gameModel.createDataModel();
+      this.gameView.renderGrid(this.gameModel.dataModel, this.counter);
+    });
 
-    _this.gameView.onStartGame = _this.onStartGame;
-    _this.gameView.onStopGame = _this.onStopGame;
-    _this.gameView.onPauseGame = _this.onPauseGame;
-    _this.gameView.onRandomize = _this.onRandomize;
+    _defineProperty(this, "initGame", () => {
+      const {
+        xGridSize,
+        yGridSize
+      } = this.gameView.getViewPortSize();
+      this.xGridSize = xGridSize;
+      this.yGridSize = yGridSize;
+      this.gameModel.xGridSize = xGridSize;
+      this.gameModel.yGridSize = yGridSize;
+      this.gameModel.createDataModel();
+      this.gameView.onStartGame = this.onStartGame;
+      this.gameView.onStopGame = this.onStopGame;
+      this.gameView.onPauseGame = this.onPauseGame;
+      this.gameView.onRandomize = this.onRandomize;
+      this.gameView.renderGrid(this.gameModel.dataModel, this.counter);
+    });
+  }
 
-    _this.gameView.renderGrid(_this.gameModel.dataModel, _this.counter);
-  });
-
-  this.gameModel = gameModel;
-  this.gameView = gameView;
-};
+}
 
 /***/ }),
 
-/***/ "./src/index.js":
+/***/ "./src/index.ts":
 /*!**********************!*\
-  !*** ./src/index.js ***!
+  !*** ./src/index.ts ***!
   \**********************/
 /*! namespace exports */
 /*! exports [not provided] [no usage info] */
@@ -180,27 +163,27 @@ var GameController = function GameController(gameModel, gameView) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_styles_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! src/styles.scss */ "./src/styles.scss");
-/* harmony import */ var src_views_GameView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/views/GameView */ "./src/views/GameView.js");
-/* harmony import */ var src_models_GameModel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/models/GameModel */ "./src/models/GameModel.js");
-/* harmony import */ var src_controllers_GameController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/controllers/GameController */ "./src/controllers/GameController.js");
-/* harmony import */ var _constants_initialData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./constants/initialData */ "./src/constants/initialData.js");
+/* harmony import */ var src_views_GameView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/views/GameView */ "./src/views/GameView.ts");
+/* harmony import */ var src_models_GameModel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/models/GameModel */ "./src/models/GameModel.ts");
+/* harmony import */ var src_controllers_GameController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/controllers/GameController */ "./src/controllers/GameController.ts");
+/* harmony import */ var src_constants_initialData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/constants/initialData */ "./src/constants/initialData.ts");
 
 
 
 
 
-window.addEventListener('load', function () {
-  var gameModel = new src_models_GameModel__WEBPACK_IMPORTED_MODULE_2__.GameModel(_constants_initialData__WEBPACK_IMPORTED_MODULE_4__.initialData);
-  var gameView = new src_views_GameView__WEBPACK_IMPORTED_MODULE_1__.GameView();
-  var gameController = new src_controllers_GameController__WEBPACK_IMPORTED_MODULE_3__.GameController(gameModel, gameView);
+window.addEventListener('load', () => {
+  const gameModel = new src_models_GameModel__WEBPACK_IMPORTED_MODULE_2__.GameModel(src_constants_initialData__WEBPACK_IMPORTED_MODULE_4__.initialData);
+  const gameView = new src_views_GameView__WEBPACK_IMPORTED_MODULE_1__.GameView();
+  const gameController = new src_controllers_GameController__WEBPACK_IMPORTED_MODULE_3__.GameController(gameModel, gameView);
   gameController.initGame();
 });
 
 /***/ }),
 
-/***/ "./src/models/GameModel.js":
+/***/ "./src/models/GameModel.ts":
 /*!*********************************!*\
-  !*** ./src/models/GameModel.js ***!
+  !*** ./src/models/GameModel.ts ***!
   \*********************************/
 /*! namespace exports */
 /*! export GameModel [provided] [no usage info] [missing usage info prevents renaming] */
@@ -215,106 +198,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var lodash_get__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash/get */ "./node_modules/lodash/get.js");
 /* harmony import */ var lodash_get__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash_get__WEBPACK_IMPORTED_MODULE_0__);
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
-var GameModel = function GameModel(initialData) {
-  var _this = this;
+class GameModel {
+  constructor(initialData) {
+    this.initialData = initialData;
 
-  _classCallCheck(this, GameModel);
+    _defineProperty(this, "xGridSize", void 0);
 
-  _defineProperty(this, "xSize", 0);
+    _defineProperty(this, "yGridSize", void 0);
 
-  _defineProperty(this, "ySize", 0);
+    _defineProperty(this, "dataModel", void 0);
 
-  _defineProperty(this, "previousDataModel", []);
+    _defineProperty(this, "previousDataModel", void 0);
 
-  _defineProperty(this, "dataModel", []);
+    _defineProperty(this, "generationDiff", void 0);
 
-  _defineProperty(this, "generationDiff", []);
-
-  _defineProperty(this, "createDataModel", function () {
-    var dataModelMock = new Array(_this.ySize).fill(new Array(_this.xSize).fill(0));
-    _this.dataModel = dataModelMock.map(function (row, i) {
-      return row.map(function (_, j) {
-        var id = "".concat(i, "-").concat(j);
-        return Number(_this.initialData.includes(id));
-      });
-    });
-    _this.previousDataModel = _toConsumableArray(_this.dataModel);
-    return _this.dataModel;
-  });
-
-  _defineProperty(this, "resetDataModel", function () {
-    return _this.createDataModel();
-  });
-
-  _defineProperty(this, "getNeighboursIndices", function (i, j) {
-    var leftTopIndex = [i - 1, j - 1];
-    var topIndex = [i - 1, j];
-    var topRightIndex = [i - 1, j + 1];
-    var leftIndex = [i, j - 1];
-    var rightIndex = [i, j + 1];
-    var bottomLeftIndex = [i + 1, j - 1];
-    var bottomIndex = [i + 1, j];
-    var bottomRightIndex = [i + 1, j + 1];
-    var neighboursIndices = [leftTopIndex, topIndex, topRightIndex, leftIndex, rightIndex, bottomLeftIndex, bottomIndex, bottomRightIndex];
-    return neighboursIndices;
-  });
-
-  _defineProperty(this, "getSelectedCellNeighboursNumber", function (i, j) {
-    var neighboursIndices = _this.getNeighboursIndices(i, j);
-
-    return neighboursIndices.reduce(function (acc, indices) {
-      var _indices = _slicedToArray(indices, 2),
-          currI = _indices[0],
-          currJ = _indices[1];
-
-      var cellData = lodash_get__WEBPACK_IMPORTED_MODULE_0___default()(lodash_get__WEBPACK_IMPORTED_MODULE_0___default()(_this.dataModel, currI), currJ); // eslint-disable-next-line no-extra-boolean-cast
-
-      if (Boolean(cellData)) {
-        // eslint-disable-next-line no-param-reassign
-        acc += 1;
-      }
-
-      return acc;
-    }, 0);
-  });
-
-  _defineProperty(this, "calculateNextGeneration", function () {
-    _this.previousDataModel = _toConsumableArray(_this.dataModel);
-
-    var currentGenerationData = _this.dataModel.map(function (_, i) {
-      return _this.dataModel[i].map(function (__, j) {
-        return _this.getSelectedCellNeighboursNumber(i, j);
-      });
+    _defineProperty(this, "getNeighboursIndices", (i, j) => {
+      const leftTopIndex = [i - 1, j - 1];
+      const topIndex = [i - 1, j];
+      const topRightIndex = [i - 1, j + 1];
+      const leftIndex = [i, j - 1];
+      const rightIndex = [i, j + 1];
+      const bottomLeftIndex = [i + 1, j - 1];
+      const bottomIndex = [i + 1, j];
+      const bottomRightIndex = [i + 1, j + 1];
+      const neighboursIndices = [leftTopIndex, topIndex, topRightIndex, leftIndex, rightIndex, bottomLeftIndex, bottomIndex, bottomRightIndex];
+      return neighboursIndices;
     });
 
-    _this.dataModel = _this.dataModel.map(function (_, i) {
-      return _this.dataModel[i].map(function (isAlive, j) {
-        var selectedNumber = currentGenerationData[i][j];
+    _defineProperty(this, "getSelectedCellNeighboursNumber", (i, j) => {
+      const neighboursIndices = this.getNeighboursIndices(i, j);
+      return neighboursIndices.reduce((acc, indices) => {
+        const [currI, currJ] = indices;
+        const cellData = lodash_get__WEBPACK_IMPORTED_MODULE_0___default()(lodash_get__WEBPACK_IMPORTED_MODULE_0___default()(this.dataModel, currI), currJ);
+
+        if (cellData && cellData === 1) {
+          return acc + 1;
+        }
+
+        return acc;
+      }, 0);
+    });
+
+    _defineProperty(this, "calculateNextGeneration", () => {
+      this.previousDataModel = [...this.dataModel];
+      const currentGenerationData = this.dataModel.map((_, i) => this.dataModel[i].map((__, j) => this.getSelectedCellNeighboursNumber(i, j)));
+      this.dataModel = this.dataModel.map((_, i) => this.dataModel[i].map((isAlive, j) => {
+        const selectedNumber = currentGenerationData[i][j];
 
         if (!isAlive && selectedNumber === 3) {
           return 1;
@@ -325,37 +257,47 @@ var GameModel = function GameModel(initialData) {
         }
 
         return isAlive;
-      });
+      }));
+      return this.dataModel;
     });
-    return _this.dataModel;
-  });
 
-  _defineProperty(this, "calculateNextGenerationDiff", function () {
-    _this.calculateNextGeneration();
+    _defineProperty(this, "calculateNextGenerationDiff", () => {
+      this.calculateNextGeneration();
+      this.generationDiff = this.previousDataModel.reduce((acc, _, i) => {
+        const diffByRow = this.previousDataModel[i].reduce((indices, alive, j) => {
+          if (this.dataModel[i][j] !== alive) {
+            indices.push(i * this.xGridSize + j);
+          }
 
-    _this.generationDiff = _this.previousDataModel.reduce(function (acc, _, i) {
-      var diffByRow = _this.previousDataModel[i].reduce(function (indices, alive, j) {
-        if (_this.dataModel[i][j] !== alive) {
-          indices.push(i * _this.xSize + j);
-        }
-
-        return indices;
+          return indices;
+        }, []);
+        acc.push(...diffByRow);
+        return acc;
       }, []);
+      return this.generationDiff;
+    });
 
-      acc.push.apply(acc, _toConsumableArray(diffByRow));
-      return acc;
-    }, []);
-    return _this.generationDiff;
-  });
+    _defineProperty(this, "createDataModel", () => {
+      const dataModelTemplate = new Array(this.yGridSize).fill(new Array(this.xGridSize).fill(0));
+      const dataModel = dataModelTemplate.map((row, i) => row.map((_, j) => {
+        const id = `${i}-${j}`;
+        return Number(this.initialData.includes(id));
+      }));
+      this.dataModel = dataModel;
+      this.previousDataModel = [...this.dataModel];
+      return this.dataModel;
+    });
 
-  this.initialData = initialData;
-};
+    _defineProperty(this, "resetDataModel", () => this.createDataModel());
+  }
+
+}
 
 /***/ }),
 
-/***/ "./src/views/GameView.js":
+/***/ "./src/views/GameView.ts":
 /*!*******************************!*\
-  !*** ./src/views/GameView.js ***!
+  !*** ./src/views/GameView.ts ***!
   \*******************************/
 /*! namespace exports */
 /*! export GameView [provided] [no usage info] [missing usage info prevents renaming] */
@@ -368,171 +310,189 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "GameView": () => /* binding */ GameView
 /* harmony export */ });
-/* harmony import */ var src_constants_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! src/constants/common */ "./src/constants/common.js");
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
+/* harmony import */ var src_constants_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! src/constants/common */ "./src/constants/common.ts");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
-var GameView = function GameView() {
-  var _this = this;
+class GameView {
+  constructor() {
+    _defineProperty(this, "onStartGame", void 0);
 
-  _classCallCheck(this, GameView);
+    _defineProperty(this, "onStopGame", void 0);
 
-  _defineProperty(this, "onStartGame", null);
+    _defineProperty(this, "onPauseGame", void 0);
 
-  _defineProperty(this, "onStopGame", null);
+    _defineProperty(this, "onRandomize", void 0);
 
-  _defineProperty(this, "onPauseGame", null);
+    _defineProperty(this, "grid", void 0);
 
-  _defineProperty(this, "onRandomize", null);
+    _defineProperty(this, "startGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RUN_GAME_BTN));
 
-  _defineProperty(this, "grid", null);
+    _defineProperty(this, "pauseGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.PAUSE_GAME_BTN));
 
-  _defineProperty(this, "startGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RUN_GAME_BTN));
+    _defineProperty(this, "stopGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.STOP_GAME_BTN));
 
-  _defineProperty(this, "pauseGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.PAUSE_GAME_BTN));
+    _defineProperty(this, "randomizeButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_BTN));
 
-  _defineProperty(this, "stopGameButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.STOP_GAME_BTN));
+    _defineProperty(this, "randomizeFactorInput", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_FACTOR_CLASS_NAME));
 
-  _defineProperty(this, "randomizeButton", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_BTN));
+    _defineProperty(this, "counterEl", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.COUNTER_CLASS_NAME));
 
-  _defineProperty(this, "randomizeFactorInput", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.RANDOMIZE_FACTOR_CLASS_NAME));
+    _defineProperty(this, "xGridSize", void 0);
 
-  _defineProperty(this, "counterEl", document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.COUNTER_CLASS_NAME));
+    _defineProperty(this, "yGridSize", void 0);
 
-  _defineProperty(this, "randomizeFactor", 0);
+    _defineProperty(this, "gridWidth", 0);
 
-  _defineProperty(this, "xSize", 0);
+    _defineProperty(this, "gridHeight", 0);
 
-  _defineProperty(this, "ySize", 0);
-
-  _defineProperty(this, "gridWidth", 0);
-
-  _defineProperty(this, "gridHeight", 0);
-
-  _defineProperty(this, "getViewPortSize", function () {
-    _this.gridWidth = Math.floor(document.documentElement.clientWidth - 150);
-    _this.gridHeight = Math.floor(document.documentElement.clientHeight);
-    _this.xSize = Math.floor(_this.gridWidth / 8);
-    _this.ySize = Math.floor(_this.gridHeight / 8);
-    return {
-      xSize: _this.xSize,
-      ySize: _this.ySize
-    };
-  });
-
-  _defineProperty(this, "getRandomizeFactor", function () {
-    return _this.randomizeFactorInput.value;
-  });
-
-  _defineProperty(this, "startGameHandler", function () {
-    _this.onStartGame();
-
-    _this.startGameButton.disabled = true;
-    _this.pauseGameButton.disabled = false;
-    _this.stopGameButton.disabled = false;
-    _this.randomizeButton.disabled = true;
-  });
-
-  _defineProperty(this, "pauseGameHandler", function () {
-    _this.onPauseGame();
-
-    _this.startGameButton.innerText = 'Resume game';
-    _this.startGameButton.disabled = false;
-    _this.pauseGameButton.disabled = true;
-    _this.randomizeButton.disabled = false;
-  });
-
-  _defineProperty(this, "stopGameHandler", function () {
-    _this.onStopGame();
-
-    _this.startGameButton.innerText = 'Start game';
-    _this.startGameButton.disabled = false;
-    _this.randomizeButton.disabled = false;
-  });
-
-  _defineProperty(this, "randomizeHandler", function () {
-    _this.onRandomize();
-  });
-
-  _defineProperty(this, "generateGridMarkup", function (dataModel) {
-    for (var i = 0; i < _this.ySize; i += 1) {
-      for (var j = 0; j < _this.xSize; j += 1) {
-        var cell = document.createElement('span');
-        var cellData = dataModel[i][j];
-        var isSelectedStringified = String(Boolean(cellData));
-        cell.setAttribute('id', i * _this.xSize + j);
-        cell.setAttribute('class', 'cell');
-        cell.setAttribute('data-type', 'cell');
-        cell.setAttribute('data-selected', isSelectedStringified);
-
-        _this.grid.insertAdjacentElement('beforeend', cell);
+    _defineProperty(this, "generateGridMarkup", dataModel => {
+      for (let i = 0; i < this.yGridSize; i += 1) {
+        for (let j = 0; j < this.xGridSize; j += 1) {
+          const cell = document.createElement('span');
+          const cellData = dataModel[i][j];
+          const isSelectedStringified = String(Boolean(cellData));
+          cell.setAttribute('id', String(i * this.xGridSize + j));
+          cell.setAttribute('class', 'cell');
+          cell.setAttribute('data-type', 'cell');
+          cell.setAttribute('data-selected', isSelectedStringified);
+          this.grid.insertAdjacentElement('beforeend', cell);
+        }
       }
-    }
-  });
-
-  _defineProperty(this, "applyGridStyles", function () {
-    _this.grid.classList.add(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.GRID_CLASS_NAME);
-
-    _this.grid.style.width = "".concat(_this.gridWidth, "px");
-    _this.grid.style.minWidth = "".concat(_this.gridWidth, "px");
-    _this.grid.style.height = "".concat(_this.gridHeight, "px");
-    _this.grid.style.minHeight = "".concat(_this.gridHeight, "px");
-    _this.grid.style.gridTemplateRow = "repeat(".concat(_this.ySize, ", 1fr)");
-    _this.grid.style.gridTemplateColumns = "repeat(".concat(_this.xSize, ", 1fr)");
-  });
-
-  _defineProperty(this, "attachControlsEventListeners", function () {
-    _this.startGameButton.addEventListener('click', _this.startGameHandler);
-
-    _this.pauseGameButton.addEventListener('click', _this.pauseGameHandler);
-
-    _this.stopGameButton.addEventListener('click', _this.stopGameHandler);
-
-    _this.randomizeButton.addEventListener('click', _this.randomizeHandler);
-  });
-
-  _defineProperty(this, "removeControlsEventListeners", function () {
-    _this.startGameButton.removeEventListener('click', _this.startGameHandler);
-
-    _this.pauseGameButton.removeEventListener('click', _this.pauseGameHandler);
-
-    _this.stopGameButton.removeEventListener('click', _this.stopGameHandler);
-  });
-
-  _defineProperty(this, "renderGrid", function (dataModel, counter) {
-    var existingGrid = document.body.querySelector(".".concat(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.GRID_CLASS_NAME));
-
-    if (existingGrid) {
-      existingGrid.remove();
-
-      _this.removeControlsEventListeners();
-    }
-
-    _this.grid = document.createElement('main');
-
-    _this.applyGridStyles();
-
-    _this.generateGridMarkup(dataModel);
-
-    _this.attachControlsEventListeners();
-
-    document.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.LEFT_PANEL_CLASS_NAME).insertAdjacentElement('afterend', _this.grid);
-    _this.pauseGameButton.disabled = true;
-    _this.stopGameButton.disabled = true;
-    _this.counterEl.innerText = counter;
-  });
-
-  _defineProperty(this, "updateGrid", function (generationDiff, counter) {
-    generationDiff.forEach(function (id) {
-      var cell = document.getElementById(id);
-      var selected = cell.dataset.selected === 'true' ? 'false' : 'true';
-      cell.setAttribute('data-selected', selected);
     });
-    document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.COUNTER_CLASS_NAME).innerHTML = counter;
-  });
-};
+
+    _defineProperty(this, "applyGridStyles", () => {
+      this.grid.classList.add(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.GRID_CLASS_NAME);
+      this.grid.style.width = `${this.gridWidth}px`;
+      this.grid.style.minWidth = `${this.gridWidth}px`;
+      this.grid.style.height = `${this.gridHeight}px`;
+      this.grid.style.minHeight = `${this.gridHeight}px`;
+      this.grid.style.gridTemplateRows = `repeat(${this.yGridSize}, 1fr)`;
+      this.grid.style.gridTemplateColumns = `repeat(${this.xGridSize}, 1fr)`;
+    });
+
+    _defineProperty(this, "attachControlsEventListeners", () => {
+      this.startGameButton?.addEventListener('click', this.startGameHandler);
+      this.pauseGameButton?.addEventListener('click', this.pauseGameHandler);
+      this.stopGameButton?.addEventListener('click', this.stopGameHandler);
+      this.randomizeButton?.addEventListener('click', this.randomizeHandler);
+    });
+
+    _defineProperty(this, "removeControlsEventListeners", () => {
+      this.startGameButton?.removeEventListener('click', this.startGameHandler);
+      this.pauseGameButton?.removeEventListener('click', this.pauseGameHandler);
+      this.stopGameButton?.removeEventListener('click', this.stopGameHandler);
+    });
+
+    _defineProperty(this, "updateCounter", counter => {
+      if (this.counterEl) {
+        this.counterEl.innerText = String(counter);
+      }
+    });
+
+    _defineProperty(this, "getViewPortSize", () => {
+      this.gridWidth = Math.floor(document.documentElement.clientWidth - 150);
+      this.gridHeight = Math.floor(document.documentElement.clientHeight);
+      this.xGridSize = Math.floor(this.gridWidth / 8);
+      this.yGridSize = Math.floor(this.gridHeight / 8);
+      return {
+        xGridSize: this.xGridSize,
+        yGridSize: this.yGridSize
+      };
+    });
+
+    _defineProperty(this, "getRandomizeFactor", () => {
+      const value = this.randomizeFactorInput?.value;
+      return Number(value);
+    });
+
+    _defineProperty(this, "startGameHandler", () => {
+      this.onStartGame();
+
+      if (this.startGameButton) {
+        this.startGameButton.disabled = true;
+      }
+
+      if (this.pauseGameButton) {
+        this.pauseGameButton.disabled = false;
+      }
+
+      if (this.stopGameButton) {
+        this.stopGameButton.disabled = false;
+      }
+
+      if (this.randomizeButton) {
+        this.randomizeButton.disabled = true;
+      }
+    });
+
+    _defineProperty(this, "pauseGameHandler", () => {
+      this.onPauseGame();
+
+      if (this.startGameButton) {
+        this.startGameButton.innerText = 'Resume game';
+        this.startGameButton.disabled = false;
+      }
+
+      if (this.pauseGameButton) {
+        this.pauseGameButton.disabled = true;
+      }
+
+      if (this.randomizeButton) {
+        this.randomizeButton.disabled = false;
+      }
+    });
+
+    _defineProperty(this, "stopGameHandler", () => {
+      this.onStopGame();
+
+      if (this.startGameButton) {
+        this.startGameButton.innerText = 'Start game';
+        this.startGameButton.disabled = false;
+      }
+
+      if (this.randomizeButton) {
+        this.randomizeButton.disabled = false;
+      }
+    });
+
+    _defineProperty(this, "randomizeHandler", () => this.onRandomize());
+
+    _defineProperty(this, "renderGrid", (dataModel, counter) => {
+      const existingGrid = document.body.querySelector(`.${src_constants_common__WEBPACK_IMPORTED_MODULE_0__.GRID_CLASS_NAME}`);
+
+      if (existingGrid) {
+        existingGrid.remove();
+        this.removeControlsEventListeners();
+      }
+
+      this.grid = document.createElement('main');
+      this.updateCounter(counter);
+      this.applyGridStyles();
+      this.generateGridMarkup(dataModel);
+      this.attachControlsEventListeners();
+      document.body.querySelector(src_constants_common__WEBPACK_IMPORTED_MODULE_0__.LEFT_PANEL_CLASS_NAME)?.insertAdjacentElement('afterend', this.grid);
+
+      if (this.pauseGameButton) {
+        this.pauseGameButton.disabled = true;
+      }
+
+      if (this.stopGameButton) {
+        this.stopGameButton.disabled = true;
+      }
+    });
+
+    _defineProperty(this, "updateGrid", (generationDiff, counter) => {
+      this.updateCounter(counter);
+      generationDiff.forEach(id => {
+        const cell = document.getElementById(String(id));
+        const selected = cell?.dataset.selected === 'true' ? 'false' : 'true';
+        cell?.setAttribute('data-selected', selected);
+      });
+    });
+  }
+
+}
 
 /***/ }),
 
@@ -3010,7 +2970,7 @@ module.exports = function (list, options) {
 /************************************************************************/
 /******/ 	// startup
 /******/ 	// Load entry module
-/******/ 	__webpack_require__("./src/index.js");
+/******/ 	__webpack_require__("./src/index.ts");
 /******/ 	// This entry module used 'exports' so it can't be inlined
 /******/ })()
 ;

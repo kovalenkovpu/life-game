@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -7,19 +8,19 @@ module.exports = {
     alias: {
       src: path.resolve(__dirname, 'src'),
     },
-    extensions: ['.js'],
+    extensions: ['.ts', '.js'],
   },
   entry: {
-    'main.js': './src/index.js',
+    'main.js': './src/index.ts',
     'style.css': './src/styles.scss',
   },
   output: {
     filename: '[name]',
-    path: path.resolve(__dirname, 'docs'),
+    path: path.resolve(__dirname, 'build'),
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: path.join(__dirname, 'docs'),
+    contentBase: path.join(__dirname, 'build'),
     inline: true,
     port: 3000,
     open: true,
@@ -38,15 +39,15 @@ module.exports = {
         ],
       },
       {
-        test: /\.js$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-            plugins: ['@babel/plugin-proposal-class-properties'],
-          },
+        test: /\.ts$/,
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            '@babel/preset-typescript',
+          ],
+          plugins: ['@babel/plugin-proposal-class-properties'],
         },
+        exclude: [/node_modules/, /build/],
       },
     ],
   },
