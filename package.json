@@ -1,14 +1,14 @@
 {
   "name": "life-game",
   "version": "1.0.0",
-  "description": "",
+  "description": "Conway's Game of Life",
   "main": "index.js",
   "scripts": {
     "start": "webpack serve",
     "build": "webpack",
     "eslint": "eslint src/**/*.{js,ts}"
   },
-  "author": "",
+  "author": "Pavel Kovalenkov",
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.20"
@@ -16,7 +16,6 @@
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
     "@types/lodash": "^4.14.165",
     "@typescript-eslint/eslint-plugin": "^4.7.0",

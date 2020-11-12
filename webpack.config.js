@@ -1,9 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-// TODO:
-// import path from 'path';
-// import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 module.exports = {
   mode: 'development',
@@ -19,11 +16,11 @@ module.exports = {
   },
   output: {
     filename: '[name]',
-    path: path.resolve(__dirname, 'docs'),
+    path: path.resolve(__dirname, 'build'),
   },
   devtool: 'source-map',
   devServer: {
-    contentBase: path.join(__dirname, 'docs'),
+    contentBase: path.join(__dirname, 'build'),
     inline: true,
     port: 3000,
     open: true,
@@ -43,8 +40,14 @@ module.exports = {
       },
       {
         test: /\.ts$/,
-        use: ['babel-loader'],
-        exclude: [/node_modules/, /docs/],
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            '@babel/preset-typescript',
+          ],
+          plugins: ['@babel/plugin-proposal-class-properties'],
+        },
+        exclude: [/node_modules/, /build/],
       },
     ],
   },
