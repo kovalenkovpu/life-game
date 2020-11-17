@@ -13,8 +13,8 @@
 ### TODO:
 - [x] New data model - LG01
 - [x] Performance on current solution - LG01
-- [ ] Code style
+- [x] Code style
 - [x] Move function approach to class-based MVC - LG02
-- [ ] TS support - LG03
+- [x] TS support - LG03
 - [ ] Move to canvas solution
 - [ ] Production config
