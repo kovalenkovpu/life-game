@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import * as path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import webpack from 'webpack';
 
-module.exports = {
+const config: webpack.Configuration = {
   mode: 'development',
   resolve: {
     alias: {
@@ -52,6 +52,10 @@ module.exports = {
     ],
   },
   plugins: [
+    // @ts-ignore:disable-next-line
+    // https://github.com/jantimon/html-webpack-plugin/issues/1383
     new HtmlWebpackPlugin({ template: './src/index.html' }),
   ],
 };
+
+export default config;

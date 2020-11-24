@@ -27,6 +27,12 @@
         "ts": "never"
       }
     ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true
+      }
+    ],
     "linebreak-style": "off",
     "no-loop-func": "off",
     "no-useless-constructor": "off",
