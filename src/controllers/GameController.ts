@@ -1,12 +1,16 @@
 import { GameControllerInterface } from 'src/types/GameController';
 import { GameModelInterface } from 'src/types/GameModel';
-import { GameViewInterface, ViewPortSizeType } from 'src/types/GameView';
+import { GameViewInterface } from 'src/types/GameView';
+import { ViewPortSizeType } from 'src/types/common';
 
 export class GameController implements GameControllerInterface {
   constructor(
     public gameModel: GameModelInterface,
     public gameView: GameViewInterface,
-  ) { }
+  ) {
+    this.gameModel = gameModel;
+    this.gameView = gameView;
+  }
 
   private xGridSize: ViewPortSizeType['xGridSize'];
 
@@ -14,15 +18,15 @@ export class GameController implements GameControllerInterface {
 
   private counter = 0;
 
-  private intervalId = 0;
+  private intervalId: NodeJS.Timeout;
 
   private onStartGame = (): void => {
     this.intervalId = setInterval(() => {
-      const generationDiff = this.gameModel.calculateNextGenerationDiff();
+      const generationUpdateData = this.gameModel.calculateNextGenerationDiff();
 
       this.counter += 1;
-      this.gameView.updateGrid(generationDiff, this.counter);
-    });
+      this.gameView.updateGrid(generationUpdateData, this.counter);
+    }, 50);
   };
 
   private onStopGame = (): void => {

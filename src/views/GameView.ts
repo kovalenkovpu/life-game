@@ -8,8 +8,9 @@ import {
   COUNTER_CLASS_NAME,
   RANDOMIZE_FACTOR_CLASS_NAME,
 } from 'src/constants/common';
-import { DataModelType, GenerationDiff } from 'src/types/GameModel';
-import { GameViewInterface, ViewPortSizeType } from 'src/types/GameView';
+import { DataModelType, GenerationUpdateData } from 'src/types/GameModel';
+import { GameViewInterface } from 'src/types/GameView';
+import { ViewPortSizeType } from 'src/types/common';
 
 export class GameView implements GameViewInterface {
   onStartGame: () => void;
@@ -20,7 +21,7 @@ export class GameView implements GameViewInterface {
 
   onRandomize: () => void;
 
-  private grid: HTMLSpanElement;
+  private grid: HTMLCanvasElement;
 
   private startGameButton = document.body
     .querySelector<HTMLButtonElement>(RUN_GAME_BTN);
@@ -44,35 +45,46 @@ export class GameView implements GameViewInterface {
 
   private yGridSize: ViewPortSizeType['yGridSize'];
 
+  private cellWidth: number = 4;
+
+  private cellHeight: number = 4;
+
+  private cellGap: number = 1;
+
+  private deadCellColor: string = '#c0a9bd';
+
+  private aliveCellColor: string = '#d96846';
+
   private gridWidth = 0;
 
   private gridHeight = 0;
 
+  private gridCoordsById: Map<number, [number, number]> = new Map();
+
   private generateGridMarkup = (dataModel: DataModelType): void => {
-    for (let i = 0; i < this.yGridSize; i += 1) {
-      for (let j = 0; j < this.xGridSize; j += 1) {
-        const cell = document.createElement('span');
+    const ctx = this.grid.getContext('2d') as CanvasRenderingContext2D;
+
+    for (let i = 0; i < this.yGridSize; i++) {
+      for (let j = 0; j < this.xGridSize; j++) {
         const cellData = dataModel[i][j];
-        const isSelectedStringified = String(Boolean(cellData));
+        const isSelected = Boolean(cellData);
 
-        cell.setAttribute('id', String(i * this.xGridSize + j));
-        cell.setAttribute('class', 'cell');
-        cell.setAttribute('data-type', 'cell');
-        cell.setAttribute('data-selected', isSelectedStringified);
+        const nextX = this.cellGap + this.cellWidth * j + this.cellGap * j;
+        const nextY = this.cellGap + this.cellHeight * i + this.cellGap * i;
+        const id = i * this.xGridSize + j;
 
-        this.grid.insertAdjacentElement('beforeend', cell);
+        this.gridCoordsById.set(id, [nextX, nextY]);
+
+        ctx.fillStyle = isSelected ? this.aliveCellColor : this.deadCellColor;
+        ctx.fillRect(nextX, nextY, this.cellWidth, this.cellHeight);
       }
     }
   };
 
   private applyGridStyles = (): void => {
     this.grid.classList.add(GRID_CLASS_NAME);
-    this.grid.style.width = `${this.gridWidth}px`;
-    this.grid.style.minWidth = `${this.gridWidth}px`;
-    this.grid.style.height = `${this.gridHeight}px`;
-    this.grid.style.minHeight = `${this.gridHeight}px`;
-    this.grid.style.gridTemplateRows = `repeat(${this.yGridSize}, 1fr)`;
-    this.grid.style.gridTemplateColumns = `repeat(${this.xGridSize}, 1fr)`;
+    this.grid.width = this.gridWidth;
+    this.grid.height = this.gridHeight;
   };
 
   private attachControlsEventListeners = (): void => {
@@ -97,8 +109,8 @@ export class GameView implements GameViewInterface {
   getViewPortSize = (): ViewPortSizeType => {
     this.gridWidth = Math.floor((document.documentElement.clientWidth - 150));
     this.gridHeight = Math.floor(document.documentElement.clientHeight);
-    this.xGridSize = Math.floor(this.gridWidth / 8);
-    this.yGridSize = Math.floor(this.gridHeight / 8);
+    this.xGridSize = Math.floor(this.gridWidth / (this.cellWidth + this.cellGap));
+    this.yGridSize = Math.floor(this.gridHeight / (this.cellHeight + this.cellGap));
 
     return {
       xGridSize: this.xGridSize,
@@ -173,7 +185,7 @@ export class GameView implements GameViewInterface {
       this.removeControlsEventListeners();
     }
 
-    this.grid = document.createElement('main');
+    this.grid = document.createElement('canvas');
 
     this.updateCounter(counter);
     this.applyGridStyles();
@@ -192,16 +204,21 @@ export class GameView implements GameViewInterface {
     }
   };
 
-  updateGrid = (generationDiff: GenerationDiff, counter: number): void => {
+  updateGrid = (generationUpdateData: GenerationUpdateData, counter: number): void => {
     this.updateCounter(counter);
 
-    generationDiff
-      .forEach((id) => {
-        const cell = document.getElementById(String(id));
-        const selected = cell?.dataset
-          .selected === 'true' ? 'false' : 'true';
+    const { generationDiff, generationState } = generationUpdateData;
 
-        cell?.setAttribute('data-selected', selected);
+    const ctx = this.grid.getContext('2d') as CanvasRenderingContext2D;
+
+    generationDiff
+      .forEach((id, ind) => {
+        const coordsById = this.gridCoordsById.get(id);
+
+        if (coordsById) {
+          ctx.fillStyle = generationState[ind] ? this.aliveCellColor : this.deadCellColor;
+          ctx.fillRect(coordsById[0], coordsById[1], this.cellWidth, this.cellHeight);
+        }
       });
   };
 }

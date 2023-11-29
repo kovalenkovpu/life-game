@@ -1,16 +1,18 @@
 import get from 'lodash/get';
 
-import { InitialDataType } from 'src/types/common';
+import { InitialDataType, ViewPortSizeType } from 'src/types/common';
 import {
   DataModelType,
   GameModelInterface,
   GenerationDiff,
+  GenerationUpdateData,
   NeighboursIndices,
 } from 'src/types/GameModel';
-import { ViewPortSizeType } from 'src/types/GameView';
 
 export class GameModel implements GameModelInterface {
-  constructor(public initialData: InitialDataType) { }
+  constructor(public initialData: InitialDataType) {
+    this.initialData = initialData;
+  }
 
   xGridSize: ViewPortSizeType['xGridSize'];
 
@@ -91,15 +93,20 @@ export class GameModel implements GameModelInterface {
     return this.dataModel;
   };
 
-  calculateNextGenerationDiff = (): GenerationDiff => {
+  calculateNextGenerationDiff = (): GenerationUpdateData => {
+    const generationState: number[] = [];
+
     this.calculateNextGeneration();
 
     this.generationDiff = this.previousDataModel
       .reduce(
         (acc, _, i) => {
           const diffByRow = this.previousDataModel[i]
-            .reduce<number[]>((indices, alive, j) => {
-              if (this.dataModel[i][j] !== alive) {
+            .reduce<number[]>((indices, previousIsAlive, j) => {
+              const currentIsAlive = this.dataModel[i][j];
+
+              if (currentIsAlive !== previousIsAlive) {
+                generationState.push(currentIsAlive);
                 indices.push(i * this.xGridSize + j);
               }
 
@@ -113,7 +120,10 @@ export class GameModel implements GameModelInterface {
         [],
       );
 
-    return this.generationDiff;
+    return {
+      generationDiff: this.generationDiff,
+      generationState,
+    };
   };
 
   createDataModel = (): DataModelType => {
