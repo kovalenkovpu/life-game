@@ -67,27 +67,8 @@ label{
 }
 
 .main-grid {
-  display: grid;
   width: calc(100% - 150px);
   height: 100%;
-  grid-gap: 0.05rem;
-}
-
-.cell {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  background-color: #c0a9bd;
-
-  &:hover {
-    background-color: gainsboro;
-  }
-
-  &[data-selected="true"] {
-    background-color: #d96846;
-  }
 }
 
 .information-panel {

@@ -19,12 +19,6 @@ const config: webpack.Configuration = {
     path: path.resolve(__dirname, 'build'),
   },
   devtool: 'source-map',
-  devServer: {
-    contentBase: path.join(__dirname, 'build'),
-    inline: true,
-    port: 3000,
-    open: true,
-  },
   module: {
     rules: [
       {
@@ -52,8 +46,6 @@ const config: webpack.Configuration = {
     ],
   },
   plugins: [
-    // @ts-ignore:disable-next-line
-    // https://github.com/jantimon/html-webpack-plugin/issues/1383
     new HtmlWebpackPlugin({ template: './src/index.html' }),
   ],
 };

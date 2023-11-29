@@ -1,9 +1,5 @@
-import { DataModelType, GenerationDiff } from './GameModel';
-
-export interface ViewPortSizeType {
-  xGridSize: number;
-  yGridSize: number;
-}
+import { ViewPortSizeType } from './common';
+import { DataModelType, GenerationUpdateData } from './GameModel';
 
 export interface GameViewInterface {
   onStartGame(): void;
@@ -18,5 +14,5 @@ export interface GameViewInterface {
   stopGameHandler(): void;
   randomizeHandler(): void;
   renderGrid(dataModel: DataModelType, counter: number): void;
-  updateGrid(generationDiff: GenerationDiff, counter: number): void
+  updateGrid(generationUpdateData: GenerationUpdateData, counter: number): void;
 }

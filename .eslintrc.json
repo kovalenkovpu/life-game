@@ -38,7 +38,8 @@
     "no-useless-constructor": "off",
     "@typescript-eslint/no-useless-constructor": [
       "error"
-    ]
+    ],
+    "no-plusplus": "off"
   },
   "settings": {
     "import/resolver": {
